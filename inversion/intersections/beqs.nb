@@ -1,0 +1,408 @@
+(************** Content-type: application/mathematica **************
+                     CreatedBy='Mathematica 5.0'
+
+                    Mathematica-Compatible Notebook
+
+This notebook can be used with any Mathematica-compatible
+application, such as Mathematica, MathReader or Publicon. The data
+for the notebook starts with the line containing stars above.
+
+To get the notebook into a Mathematica-compatible application, do
+one of the following:
+
+* Save the data starting with the line of stars above into a file
+  with a name ending in .nb, then open the file inside the
+  application;
+
+* Copy the data starting with the line of stars above to the
+  clipboard, then use the Paste menu command inside the application.
+
+Data for notebooks contains only printable 7-bit ASCII and can be
+sent directly in email or through ftp in text mode.  Newlines can be
+CR, LF or CRLF (Unix, Macintosh or MS-DOS style).
+
+NOTE: If you modify the data for this notebook not in a Mathematica-
+compatible application, you must delete the line below containing
+the word CacheID, otherwise Mathematica-compatible applications may
+try to use invalid cache data.
+
+For more information on notebooks and Mathematica-compatible 
+applications, contact Wolfram Research:
+  web: http://www.wolfram.com
+  email: info@wolfram.com
+  phone: +1-217-398-0700 (U.S.)
+
+Notebook reader applications are available free of charge from 
+Wolfram Research.
+*******************************************************************)
+
+(*CacheID: 232*)
+
+
+(*NotebookFileLineBreakTest
+NotebookFileLineBreakTest*)
+(*NotebookOptionsPosition[     12295,        323]*)
+(*NotebookOutlinePosition[     13041,        348]*)
+(*  CellTagsIndexPosition[     12997,        344]*)
+(*WindowFrame->Normal*)
+
+
+
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+    StyleBox[\(SetDirectory["\<d:\\neutrals\\ness7\\inversion\\intersections\>\
+"]\),
+      "Input"]], "Input"],
+
+Cell[BoxData[
+    \("d:\\neutrals\\ness7\\inversion\\intersections"\)], "Output"]
+}, Open  ]],
+
+Cell[BoxData[
+    \( (*\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(\
+**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(\
+**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(\
+**\)\(**\)\(**\)\(**\)\(**\)\(**\)******) \)], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(\(\( (*k = 
+        1\ boundary*) \)\(\[IndentingNewLine]\)\(\(resids1 = \((gu - g)\)/
+          dsigu - \((gl - gu)\)/dsigl\)\(\n\)
+    \(resids2 = \((gl - g)\)/dsigm - \((gl - gu)\)/
+          dsigl\)\(\[IndentingNewLine]\)
+    \(resids3 = \((gu - g)\)/dsigu - \((gl - g)\)/
+          dsigl\)\(\[IndentingNewLine]\)
+    \(ss = 
+      resids1*resids1 + resids2*resids2\)\( (*\(+resids3\)*resids3*) \)\(\n\)
+    \(eqns = D[ss, g];\)\(\n\)
+    \(z = g /. Solve[eqns \[Equal] 0, {g}];\)\(\n\)
+    \(cgu = Coefficient[z, gu]\)\(\n\)
+    \(cgl = Coefficient[z, gl]\)\(\n\)
+    \(c0\  = \ Together[Expand[z - cgu*gu - cgl*gl]]\)\(\[IndentingNewLine]\)
+    \({cgu, cgl, Together[Expand[cgu + cgl]], c0}\)\(\ \)\)\)\)], "Input"],
+
+Cell[BoxData[
+    \(\(-\(\(gl - gu\)\/dsigl\)\) + \(\(-g\) + gu\)\/dsigu\)], "Output"],
+
+Cell[BoxData[
+    \(\(\(-g\) + gl\)\/dsigm - \(gl - gu\)\/dsigl\)], "Output"],
+
+Cell[BoxData[
+    \(\(-\(\(\(-g\) + gl\)\/dsigl\)\) + \(\(-g\) + gu\)\/dsigu\)], "Output"],
+
+Cell[BoxData[
+    \(\((\(\(-g\) + gl\)\/dsigm - \(gl - gu\)\/dsigl)\)\^2 + \((\(-\(\(gl - \
+gu\)\/dsigl\)\) + \(\(-g\) + gu\)\/dsigu)\)\^2\)], "Output"],
+
+Cell[BoxData[
+    \({\(dsigl\ dsigm\^2 + dsigm\^2\ dsigu + dsigm\ dsigu\^2\)\/\(dsigl\ \
+\((dsigm\^2 + dsigu\^2)\)\)}\)], "Output"],
+
+Cell[BoxData[
+    \({\(\(-dsigm\^2\)\ dsigu + dsigl\ dsigu\^2 - dsigm\ dsigu\^2\)\/\(dsigl\ \
+\((dsigm\^2 + dsigu\^2)\)\)}\)], "Output"],
+
+Cell[BoxData[
+    \({0}\)], "Output"],
+
+Cell[BoxData[
+    \({{\(dsigl\ dsigm\^2 + dsigm\^2\ dsigu + dsigm\ dsigu\^2\)\/\(dsigl\ \
+\((dsigm\^2 + dsigu\^2)\)\)}, {\(\(-dsigm\^2\)\ dsigu + dsigl\ dsigu\^2 - \
+dsigm\ dsigu\^2\)\/\(dsigl\ \((dsigm\^2 + dsigu\^2)\)\)}, {1}, {0}}\)], \
+"Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(\(\( (*k = 
+        n\ boundary*) \)\(\[IndentingNewLine]\)\(\(resids1 = \((g - gu)\)/
+          dsigm - \ \((gl - gu)\)/dsigu\)\(\n\)
+    \(resids2 = \((g - gl)\)/dsigl - \ \((gl - gu)\)/
+          dsigu\)\(\[IndentingNewLine]\)
+    \(ss = resids1*resids1 + resids2*resids2\)\(\n\)
+    \(eqns = D[ss, g];\)\(\n\)
+    \(z = g /. Solve[eqns \[Equal] 0, {g}];\)\(\n\)
+    \(cgu = Coefficient[z, gu]\)\(\n\)
+    \(cgl = Coefficient[z, gl]\)\(\n\)
+    \(c0\  = \ Together[Expand[z - cgu*gu - cgl*gl]]\)\(\[IndentingNewLine]\)
+    \({cgu, cgl, Together[Expand[cgu + cgl]], c0}\)\(\ \)\)\)\)], "Input"],
+
+Cell[BoxData[
+    \(\(g - gu\)\/dsigm - \(gl - gu\)\/dsigu\)], "Output"],
+
+Cell[BoxData[
+    \(\(g - gl\)\/dsigl - \(gl - gu\)\/dsigu\)], "Output"],
+
+Cell[BoxData[
+    \(\((\(g - gl\)\/dsigl - \(gl - gu\)\/dsigu)\)\^2 + \((\(g - gu\)\/dsigm \
+- \(gl - gu\)\/dsigu)\)\^2\)], "Output"],
+
+Cell[BoxData[
+    \({\(\(-dsigl\^2\)\ dsigm - dsigl\ dsigm\^2 + dsigl\^2\ \
+dsigu\)\/\(\((dsigl\^2 + dsigm\^2)\)\ dsigu\)}\)], "Output"],
+
+Cell[BoxData[
+    \({\(dsigl\^2\ dsigm + dsigl\ dsigm\^2 + dsigm\^2\ dsigu\)\/\(\((dsigl\^2 \
++ dsigm\^2)\)\ dsigu\)}\)], "Output"],
+
+Cell[BoxData[
+    \({0}\)], "Output"],
+
+Cell[BoxData[
+    \({{\(\(-dsigl\^2\)\ dsigm - dsigl\ dsigm\^2 + dsigl\^2\ \
+dsigu\)\/\(\((dsigl\^2 + dsigm\^2)\)\ dsigu\)}, {\(dsigl\^2\ dsigm + dsigl\ \
+dsigm\^2 + dsigm\^2\ dsigu\)\/\(\((dsigl\^2 + dsigm\^2)\)\ dsigu\)}, {1}, \
+{0}}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(\(\( (*\ 1 < k < n\ *) \)\(\[IndentingNewLine]\)\(\(resids1 = 
+      Expand[\((\((g - gu)\)/dsigu - \ \((gl - gu)\)/
+              dsigm)\)]\)\(\ \)\( (*\(\(/\)\((pu - pm)\)\)\(]\)*) \)\(\n\)
+    \(resids2 = 
+      Expand[\((\((gl - g)\)/dsigl - \ \((gl - gu)\)/
+              dsigm)\)]\)\(\ \)\( (*\(\(/\)\((pl - 
+              pm)\)\)\(]\)*) \)\(\[IndentingNewLine]\)
+    \(ss = \((resids1 - resids2)\)*\((resids1 - 
+            resids2)\)\)\(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \)\(\
+ (*\ minmize\ b_z\ *) \)\(\n\)
+    \(ss\  = \ 
+      resids1*resids1 + 
+        resids2*resids2\)\(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ \ \ \)\( (*\ minmize\ b\ \ \ *) \)\(\[IndentingNewLine]\)
+    \(eqns = D[ss, g];\)\(\n\)
+    \(z = g /. Solve[eqns \[Equal] 0, {g}];\)\(\n\)
+    \(cgu = Together[Expand[Coefficient[z, gu]]]\)\(\n\)
+    \(cgl = Together[Expand[Coefficient[z, gl]]]\)\(\n\)
+    \(c0\  = \ Together[Expand[z - cgu*gu - cgl*gl]]\)\(\[IndentingNewLine]\)
+    \({cgu, cgl, Together[Expand[cgu + cgl]], c0}\)\(\ \)\)\)\)], "Input"],
+
+Cell[BoxData[
+    \(g\/dsigu - gl\/dsigm + gu\/dsigm - gu\/dsigu\)], "Output"],
+
+Cell[BoxData[
+    \(\(-\(g\/dsigl\)\) + gl\/dsigl - gl\/dsigm + gu\/dsigm\)], "Output"],
+
+Cell[BoxData[
+    \(\((g\/dsigl + g\/dsigu - gl\/dsigl - gu\/dsigu)\)\^2\)], "Output"],
+
+Cell[BoxData[
+    \(\((\(-\(g\/dsigl\)\) + gl\/dsigl - gl\/dsigm + gu\/dsigm)\)\^2 + \
+\((g\/dsigu - gl\/dsigm + gu\/dsigm - gu\/dsigu)\)\^2\)], "Output"],
+
+Cell[BoxData[
+    \({\(dsigl\^2\ dsigm - dsigl\^2\ dsigu + dsigl\ dsigu\^2\)\/\(dsigm\ \
+\((dsigl\^2 + dsigu\^2)\)\)}\)], "Output"],
+
+Cell[BoxData[
+    \({\(dsigl\^2\ dsigu - dsigl\ dsigu\^2 + dsigm\ dsigu\^2\)\/\(dsigm\ \
+\((dsigl\^2 + dsigu\^2)\)\)}\)], "Output"],
+
+Cell[BoxData[
+    \({0}\)], "Output"],
+
+Cell[BoxData[
+    \({{\(dsigl\^2\ dsigm - dsigl\^2\ dsigu + dsigl\ dsigu\^2\)\/\(dsigm\ \
+\((dsigl\^2 + dsigu\^2)\)\)}, {\(dsigl\^2\ dsigu - dsigl\ dsigu\^2 + dsigm\ \
+dsigu\^2\)\/\(dsigm\ \((dsigl\^2 + dsigu\^2)\)\)}, {1}, {0}}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(\(\(\[IndentingNewLine]\)\( \
+(*\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(\
+**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(\
+**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(\
+**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)\(**\)******) \)\(\[IndentingNewLine]\
+\)\(\[IndentingNewLine]\)\( (*\ 
+      1 < k < n\ *) \)\(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \)\( (*\ \ \ \ the\ x - 
+        z\ b\ equation\ \ \ *) \)\(\[IndentingNewLine]\)\(\[IndentingNewLine]\
+\)\(bu = \((gg[k] - gg[k - 1])\)/dsigu; \ 
+    bl\  = \ \((gg[k + 1] - gg[k])\)/
+        dsigl;\[IndentingNewLine]\[IndentingNewLine]
+    pumid\  = \ \((pp[k - 1] + pp[k])\)/2; \ 
+    plmid\  = \ \((pp[k] + pp[k + 1])\)/
+        2;\ \[IndentingNewLine]\[IndentingNewLine]
+    \(r = \ \((pp[k] - pumid)\)/\((plmid - 
+              pumid)\);\)\[IndentingNewLine]\[IndentingNewLine]
+    \(bVertical\  = 
+        Together[
+          Expand[\((1 - r)\)*bu\  + \ 
+              r*bl]];\)\[IndentingNewLine]\[IndentingNewLine]
+    bVNum\  = \ Numerator[bVertical]; \ 
+    bVDen\  = \ 
+      Denominator[
+        bVertical];\ \
+\[IndentingNewLine]\[IndentingNewLine]\[IndentingNewLine]
+    ie\  = \ i + 1; \ iw\  = \ i - 1;\[IndentingNewLine]\[IndentingNewLine]
+    be = \((g[k, j, ie] - gg[k])\)/dsige; \ 
+    bw\  = \ \((gg[k] - g[k, j, iw])\)/
+        dsigw;\[IndentingNewLine]\[IndentingNewLine]
+    longsemid\  = \ \((longs[j, i] + longs[j, ie])\)/2; \ 
+    longswmid\  = \ \((longs[j, iw] + longts[j, i])\)/
+        2;\ \[IndentingNewLine]\[IndentingNewLine]
+    \(r = \ \((longs[j, i] - longswmid)\)/\((longsemid - 
+              longswmid)\);\)\[IndentingNewLine]\[IndentingNewLine]
+    \(bHorizontal\  = 
+        Together[
+          Expand[\((1 - r)\)*bw\  + \ 
+              r*be]];\)\[IndentingNewLine]\[IndentingNewLine]
+    bHNum\  = \ Numerator[bHorizontal]; \ 
+    bHDen\  = \ 
+      Denominator[bHorizontal];\ \[IndentingNewLine]\[IndentingNewLine]
+    \(xzbEqn\  = \ 
+        bVNum*bHDen - bVDen*bHNum;\)\[IndentingNewLine]\[IndentingNewLine]
+    \(gc1\  = \ 
+        Factor[Coefficient[xzbEqn, \ 
+            gg[k]]];\)\[IndentingNewLine]\[IndentingNewLine]
+    \(gc1a\  = 
+        dsigl*dsigu*dsige*\ 
+          Factor[Coefficient[gc1, 
+              dsigl*dsigu*dsige]];\)\[IndentingNewLine]\[IndentingNewLine]
+    \(gc1b\  = 
+        dsigl*dsigu*dsigw*\ 
+          Factor[Coefficient[gc1, 
+              dsigl*dsigu*dsigw]];\)\[IndentingNewLine]\[IndentingNewLine]
+    \(gc1c\  = \ 
+        Factor[Expand[
+            gc1\  - gc1a - gc1b]];\)\[IndentingNewLine]\[IndentingNewLine]
+    \(gc2\  = \ 
+        Factor[Coefficient[xzbEqn, \ 
+            gg[k - 1]]];\)\[IndentingNewLine]\[IndentingNewLine]
+    \(gc3\  = \ 
+        Factor[Coefficient[xzbEqn, \ 
+            gg[k + 1]]];\)\[IndentingNewLine]\[IndentingNewLine]
+    \(gc4\  = 
+        Factor[\ Coefficient[xzbEqn, \ 
+            g[k, j, i + 1]]];\)\[IndentingNewLine]\[IndentingNewLine]
+    \(gc5\  = \ 
+        Factor[Coefficient[xzbEqn, \ 
+            g[k, j, i - 1]]];\)\[IndentingNewLine]\[IndentingNewLine]
+    residual\  = \ 
+      Together[Expand[
+          xzbEqn\  - \ gc1*gg[k] - gc2*gg[k - 1] - gc3*gg[k + 1] - 
+            gc4*g[k, j, i + 1] - 
+            gc5\ *g[k, j, i - 1]]]\[IndentingNewLine]\[IndentingNewLine]
+    FortranForm[gc1a]\[IndentingNewLine]\[IndentingNewLine]
+    \)\)\)], "Input"],
+
+Cell[BoxData[
+    RowBox[{\(General::"spell1"\), \(\(:\)\(\ \)\), "\<\"Possible spelling \
+error: new symbol name \\\"\\!\\(longswmid\\)\\\" is similar to existing \
+symbol \\\"\\!\\(longsemid\\)\\\". \
+\\!\\(\\*ButtonBox[\\\"More\[Ellipsis]\\\", ButtonStyle->\\\"RefGuideLinkText\
+\\\", ButtonFrame->None, ButtonData:>\\\"General::spell1\\\"]\\)\"\>"}]], \
+"Message"],
+
+Cell[BoxData[
+    RowBox[{\(General::"spell1"\), \(\(:\)\(\ \)\), "\<\"Possible spelling \
+error: new symbol name \\\"\\!\\(longts\\)\\\" is similar to existing symbol \
+\\\"\\!\\(longs\\)\\\". \\!\\(\\*ButtonBox[\\\"More\[Ellipsis]\\\", \
+ButtonStyle->\\\"RefGuideLinkText\\\", ButtonFrame->None, \
+ButtonData:>\\\"General::spell1\\\"]\\)\"\>"}]], "Message"],
+
+Cell[BoxData[
+    \(0\)], "Output"],
+
+Cell["\<\
+-(dsige*dsigl*dsigu*(longs(j,i) - longs(j,1 + i))*(pp(-1 + k) - pp(1 + k)))\
+\>", "Output"]
+}, Open  ]]
+},
+FrontEndVersion->"5.0 for Microsoft Windows",
+ScreenRectangle->{{0, 1400}, {0, 908}},
+ScreenStyleEnvironment->"Presentation",
+WindowSize->{1392, 823},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+PrintingCopies->1,
+PrintingPageRange->{Automatic, Automatic}
+]
+
+(*******************************************************************
+Cached data follows.  If you edit this Notebook file directly, not
+using Mathematica, you must remove the line containing CacheID at
+the top of  the file.  The cache data will then be recreated when
+you save this file from within Mathematica.
+*******************************************************************)
+
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+
+(*NotebookFileOutline
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[1776, 53, 125, 3, 38, "Input"],
+Cell[1904, 58, 81, 1, 38, "Output"]
+}, Open  ]],
+Cell[2000, 62, 308, 4, 38, "Input"],
+
+Cell[CellGroupData[{
+Cell[2333, 70, 741, 15, 268, "Input"],
+Cell[3077, 87, 86, 1, 57, "Output"],
+Cell[3166, 90, 77, 1, 57, "Output"],
+Cell[3246, 93, 90, 1, 57, "Output"],
+Cell[3339, 96, 152, 2, 58, "Output"],
+Cell[3494, 100, 131, 2, 60, "Output"],
+Cell[3628, 104, 136, 2, 60, "Output"],
+Cell[3767, 108, 37, 1, 38, "Output"],
+Cell[3807, 111, 249, 4, 60, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[4093, 120, 616, 12, 245, "Input"],
+Cell[4712, 134, 72, 1, 57, "Output"],
+Cell[4787, 137, 72, 1, 57, "Output"],
+Cell[4862, 140, 133, 2, 58, "Output"],
+Cell[4998, 144, 136, 2, 60, "Output"],
+Cell[5137, 148, 131, 2, 60, "Output"],
+Cell[5271, 152, 37, 1, 38, "Output"],
+Cell[5311, 155, 249, 4, 60, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[5597, 164, 1249, 22, 268, "Input"],
+Cell[6849, 188, 78, 1, 57, "Output"],
+Cell[6930, 191, 87, 1, 57, "Output"],
+Cell[7020, 194, 86, 1, 58, "Output"],
+Cell[7109, 197, 154, 2, 58, "Output"],
+Cell[7266, 201, 131, 2, 60, "Output"],
+Cell[7400, 205, 131, 2, 60, "Output"],
+Cell[7534, 209, 37, 1, 38, "Output"],
+Cell[7574, 212, 242, 3, 60, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[7853, 220, 3551, 78, 1188, "Input"],
+Cell[11407, 300, 368, 6, 28, "Message"],
+Cell[11778, 308, 359, 5, 28, "Message"],
+Cell[12140, 315, 35, 1, 38, "Output"],
+Cell[12178, 318, 101, 2, 53, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+
+
+(*******************************************************************
+End of Mathematica Notebook file.
+*******************************************************************)
+

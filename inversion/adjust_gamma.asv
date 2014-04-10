@@ -1,0 +1,10 @@
+
+indss = find(finite(g)); gg = g(indss); nn = length(indss);
+
+[gg_srtd, kk_srtd] = sort(gg); 
+
+nn05 = round(nn*0.05); nn95 = round(nn*0.95); 
+
+indsmgs = kk_srtd([nn05; nn95]); gi_adj = gg_srtd([nn05; nn95]);
+
+boundary_gammas = [indsmgs,gi_adj]
