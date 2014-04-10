@@ -1,0 +1,52 @@
+function N2 = dj_bfrq(s,t,p)
+
+%%% STABILIZE:      Compute buoyancy frequency profile for cast of data
+%%%
+%%% USAGE:          N2 = dj_bfrq(s,t,p)
+%%%
+%%% INPUT:          s       matrix of salinity (each column being a cast)
+%%%                 t       matrix of in-situ temperatures 
+%%%                 p       matrix of pressures
+%%%                 
+%%%                 NOTE:   missing values denoted by NaN's
+%%%
+%%% OUTPUT:         N2      vector of N2 lower bounds
+%%%
+%%% UNITS:          salinity                 psu (IPSS-78)
+%%%                 temperature degrees      deg. C (ITS-90)
+%%%                 pressure                 db
+%%%                 N2                       sec^-2
+%%%
+%%%
+%%% AUTHOR:         David Jackett
+%%%
+%%% CREATED:        Sept, 2002
+%%%
+%%% REVISION:       
+%%%
+
+
+
+if nargin ~= 3
+  error('invalid  # input arguments in dj_bfrq')
+end
+
+n = length(s);
+
+eta = eta_from_t(s,t,p);
+
+s_mid = 0.5*(s(1:n-1)+s(2:n));
+eta_mid = 0.5*(eta(1:n-1)+eta(2:n));
+p_mid = 0.5*(p(1:n-1)+p(2:n));
+
+[rho,rho_s,rho_eta,rho_p] = eosall_from_eta(s_mid,eta_mid,p_mid);
+
+alfa_mid = -rho_eta./rho;
+beta_mid = rho_s./rho;
+
+
+
+
+return
+
+

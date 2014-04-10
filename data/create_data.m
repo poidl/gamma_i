@@ -27,11 +27,11 @@ function varargout = create_data(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-    'gui_Singleton',  gui_Singleton, ...
-    'gui_OpeningFcn', @create_data_OpeningFcn, ...
-    'gui_OutputFcn',  @create_data_OutputFcn, ...
-    'gui_LayoutFcn',  [] , ...
-    'gui_Callback',   []);
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @create_data_OpeningFcn, ...
+                   'gui_OutputFcn',  @create_data_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -56,34 +56,36 @@ function create_data_OpeningFcn(hObject, eventdata, handles, varargin)
 
 clc
 
-cd /home/bar747/matlab/gamma_i/data
-
-%z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/data']; eval(cmd)
+%cd d:/neutrals/ness8/data
+default_dir = which('create_data.m');
+cd ([default_dir(1:end-14)])
+%z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/data']; eval(cmd) 
 
 set(0,'DefaultFigureColor',[0.961 0.988 0.965])
 
 handles.output = hObject;
-
 handles.grdx = '1:1:nx';
-
 handles.grdy = '1:1:ny';
-
 handles.grdz = '1:1:nz';
+handles.select = 'ocean==5 & lat>=10';
 
-handles.select = 'ocean==5 & lats>=10';
-
-load handles_last, handles.open_path = plast, clear plast
+try
+    load handles_last
+    handles.open_path = plast
+    clear plast
+catch
+    handles.open_path = default_dir(1:end-14);
+end
 
 % Update handles structure
 guidata(hObject, handles);
-
 
 % UIWAIT makes create_data wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = create_data_OutputFcn(hObject, eventdata, handles)
+function varargout = create_data_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -93,14 +95,13 @@ function varargout = create_data_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-
-function grid_res_longs_edit_Callback(hObject, eventdata, handles)
-% hObject    handle to grid_res_longs_edit (see GCBO)
+function grid_res_long_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to grid_res_long_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of grid_res_longs_edit as text
-%        str2double(get(hObject,'String')) returns contents of grid_res_longs_edit as a double
+% Hints: get(hObject,'String') returns contents of grid_res_long_edit as text
+%        str2double(get(hObject,'String')) returns contents of grid_res_long_edit as a double
 
 handles.grdx = get(hObject,'String');
 
@@ -108,10 +109,9 @@ handles.grdx = get(hObject,'String');
 guidata(hObject, handles)
 
 
-
 % --- Executes during object creation, after setting all properties.
-function grid_res_longs_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to grid_res_longs_edit (see GCBO)
+function grid_res_long_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to grid_res_long_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -137,7 +137,6 @@ handles.grdy = get(hObject,'String')
 guidata(hObject, handles);
 
 
-
 % --- Executes during object creation, after setting all properties.
 function edit2_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to edit2 (see GCBO)
@@ -160,6 +159,8 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 
 
 
+
+
 function edit4_Callback(hObject, eventdata, handles)
 % hObject    handle to select_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -176,7 +177,6 @@ handles.select = get(hObject,'String');
 guidata(hObject, handles);
 
 
-
 % --- Executes during object creation, after setting all properties.
 function select_edit_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to select_edit (see GCBO)
@@ -190,7 +190,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
 % --- Executes on button press in select_ok_pushbutton.
 function select_ok_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to select_ok_pushbutton (see GCBO)
@@ -198,23 +197,28 @@ function select_ok_pushbutton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-global s ct t p g longs lats ocean n longss dist
+global SA CT t p g long lat ocean n longs lats dist
 
-if length(size(g))~=length(size(s)) | size(g)~=size(s)
-    g = nan*ones(size(s));
+if length(size(g))~=length(size(SA)) | size(g)~=size(SA)
+    g = nans(size(SA));
 end
 
-[nz,ny,nx] = size(s);
+[nz,ny,nx] = size(SA);
 
-longs0 = longs; lats0 = lats; longss = nanmean(longs), latss = nanmean(lats');
+long0 = long;
+lat0 = lat;
+longs = nanmean(long);
+lats = nanmean(lat');
 
-inds = find(isnan(s(1,:,:))); longs0(inds) = nan; lats0(inds) = nan;
+Inan = find(isnan(SA(1,:,:)));
+long0(Inan) = nan;
+lat0(Inan) = nan;
 
 whos
 
-cmd = ['inds_o = find(', handles.select, ');'], eval(cmd)
+cmd = ['inds_o = find(', handles.select, ');'], eval(cmd)   
 
-%cmd = ['[longs_min,inds_o] = min(abs(longss-', handles.select, ')); longss(inds_o)'], eval(cmd)       %%%%%%%%   the inclusion criteria
+%cmd = ['[long_min,inds_o] = min(abs(longs-', handles.select, ')); longs(inds_o)'], eval(cmd)       %%%%%%%%   the inclusion criteria
 
 if length(inds_o)==0
     error('****    no data matching selection criteria    ****')
@@ -222,60 +226,75 @@ end
 
 inds = setdiff(1:nx*ny,inds_o); %[length(inds),nx*ny];
 
-s(:,inds) = nan; t(:,inds) = nan; p(:,inds) = nan; g(:,inds) = nan;
+SA(:,inds) = nan;
+CT(:,inds) = nan;
+%t(:,inds) = nan;
+p(:,inds) = nan;
+g(:,inds) = nan; 
 
-longs0(inds) = nan; lats0(inds) = nan; ocean(inds) = nan; n(inds) = nan;
+long0(inds) = nan;
+lat0(inds) = nan;
+ocean(inds) = nan;
+n(inds) = nan;
 
-longs_min = nanmin(longs0(:)); longs_max = nanmax(longs0(:));
+long_min = nanmin(long0(:));
+long_max = nanmax(long0(:));
 
-lats_min = nanmin(lats0(:)); lats_max = nanmax(lats0(:));
+lat_min = nanmin(lat0(:));
+lat_max = nanmax(lat0(:));
 
-indsx = find(longs_min<=longss&longss<=longs_max);
+indsx = find(long_min<=longs & longs<=long_max);
+indsy = find(lat_min<=lats & lats<=lat_max);
 
-indsy = find(lats_min<=latss&latss<=lats_max);
+nx = length(indsx);
+ny = length(indsy);
 
-nx = length(indsx); ny = length(indsy);
+SA = SA(:,indsy,indsx);
+CT = CT(:,indsy,indsx);
+%t = t(:,indsy,indsx);
+p = p(:,indsy,indsx); 
 
-s = s(:,indsy,indsx); t = t(:,indsy,indsx);
+if exist('g','var'), g = g(:,indsy,indsx); end
+if exist('ocean','var'), ocean = ocean(indsy,indsx); end
+if exist('n','var'), n = n(indsy,indsx); end
+if exist('long','var'), long = long(indsy,indsx); end
+if exist('lat','var'), lat = lat(indsy,indsx); end
+    
+%      squeeze a section if selected
 
-p = p(:,indsy,indsx);
-
-if exist('g'), g = g(:,indsy,indsx); end
-if exist('ocean'), ocean = ocean(indsy,indsx); end
-if exist('n'), n = n(indsy,indsx); end
-if exist('longs'), longs = longs(indsy,indsx); end
-if exist('lats'), lats = lats(indsy,indsx); end
-
-%%      squeeze a section if selected
-
-s = squeeze(s); t = squeeze(t); p = squeeze(p); g = squeeze(g);
-
-longs = squeeze(longs); lats = squeeze(lats);
+SA = squeeze(SA);
+CT = squeeze(CT);
+%t = squeeze(t);
+p = squeeze(p);
+g = squeeze(g);
+long = squeeze(long);
+lat = squeeze(lat); 
 
 figure
 
-if length(size(s))==2
-    longs_range = max(longs)-min(longs);
-    lats_range = max(lats)-min(lats);
+if length(size(SA))==2
+    long_range = max(long) - min(long);
+    lat_range = max(lat) - min(lat);
     set(gcf,'Name','ocean depth index','NumberTitle','off','Color',[0.961 0.988 0.965])
-    if longs_range<lats_range
-        longs = median(longs)*ones(size(lats));
-        fpcolor(lats,(1:nz),t(:,:))
-        xlabel('latitudes')
-    elseif longs_range>lats_range
-        lats = median(lats)*ones(size(longs));
-        fpcolor(longs,(1:nz),t(:,:))
-        xlabel('longitudes')
+    if long_range < lat_range
+        long = median(long)*ones(size(lat));
+        pcolor(lat,(1:nz),CT(:,:))
+        xlabel('Latitude')
+    elseif long_range>lat_range
+        lat = median(lat)*ones(size(long));
+        pcolor(long,(1:nz),CT(:,:))
+        xlabel('Longitude')
     else
         error('****    ERROR 1 in create_data.m    ****')
     end
     set(gca,'ydir','reverse','color','k')
-elseif length(size(s))==3
-    longss = nanmean(longs); latss = nanmean(lats'); dj_pltmp(longss,latss,squeeze(t(1,:,:)))
+elseif length(size(SA))==3
+	longs = nanmean(long);
+    lats = nanmean(lat');
+    dj_pltmp(longs,lats,squeeze(CT(1,:,:)))    
 else
     error('****    ERROR 2 in create_data.m')
 end
-
 
 
 % --------------------------------------------------------------------
@@ -284,11 +303,16 @@ function Open_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-clear global, clc, dj_tic
+%clear global, clc, dj_tic
 
-global s t p g ocean n longs lats
-
-cmd = ['cd ', handles.open_path]; eval(cmd)
+global SA CT t p g ocean n long lat
+try
+    %cmd = ['cd ', handles.open_path]; eval(cmd)
+    cd ([handles.open_path])
+catch
+    default_dir = which('create_data.m');
+    cd ([default_dir(1:end-14)])
+end
 
 [FileName,PathName] = uigetfile('*.mat');
 
@@ -296,9 +320,12 @@ cmd = ['load ', PathName, FileName]; eval(cmd)
 
 handles.open_path = PathName;
 
-cd /home/bar747/matlab/gamma_i/data
+default_dir = which('create_data.m');
+cd ([default_dir(1:end-14)])
 
-%z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/data']; eval(cmd)
+%cd d:/neutrals/ness8/data
+
+%z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/data']; eval(cmd) 
 
 % update handles structure
 
@@ -306,43 +333,49 @@ guidata(hObject, handles);
 
 % save file location
 
-plast = handles.open_path; save handles_last plast
+plast = handles.open_path;
+save handles_last plast 
 
 % adjust pressure if needs be
 
 dims = size(p);
 if length(dims)==2 & dims(2)==1
-    if length(size(s))==2
-        [nz,nx] = size(s);
-        p = reshape(p(:)*ones(1,nx),nz,nx);
-    else
-        [nz,ny,nx] = size(s);
-        p = reshape(p(:)*ones(1,nx*ny),nz,ny,nx);
-    end
+  if length(size(SA))==2
+    [nz,nx] = size(SA);
+    p = reshape(p(:)*ones(1,nx),nz,nx); 
+  else
+    [nz,ny,nx] = size(SA);
+    p = reshape(p(:)*ones(1,nx*ny),nz,ny,nx); 
+  end
 end
+ 
+% adjust long and lat if needs be
 
-% adjust longs and lats if needs be
+[nz,ny,nx] = size(SA);
+dims = size(long);
 
-[nz,ny,nx] = size(s); dims = size(longs);
+if length(size(SA))==2
 
-if length(size(s))==2
-    
 else
-    if dims(1)~=ny | dims(2)~=nx
-        longs = ones(ny,1)*longs(:)'; lats = lats(:)*ones(1,nx);
-    end
+  if dims(1)~=ny | dims(2)~=nx
+    long = ones(ny,1)*long(:)';
+    lat = lat(:)*ones(1,nx);
+  end
 end
 
 % adjust ocean and n if needs be
 
 % ocean = []
 
-if exist('ocean')~=1 | length(ocean)==0 | exist('n')~=1 | length(n)==0
+if exist('ocean','var')~=1 | length(ocean)==0 | exist('n','var')~=1 | length(n)==0
     disp( 'computing oceans and depth ...')
-    dj_tic, oceans_and_n, dj_toc, dj_pause(1)
+    dj_tic
+    oceans_and_n
+    dj_toc
+    dj_pause(1)
 end
 
-% figure, dj_pltmp(nanmean(longs),nanmean(lats')',ocean)
+% figure, dj_pltmp(nanmean(long),nanmean(lat')',ocean)
 
 ok = '... loaded data'
 
@@ -357,7 +390,6 @@ function File_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-
 % --------------------------------------------------------------------
 function Help_Callback(hObject, eventdata, handles)
 % hObject    handle to Help (see GCBO)
@@ -365,9 +397,8 @@ function Help_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 cd ../webstuff
-open create_data_css.html
+    open create_data_css.html
 cd ../data
-
 
 
 % --------------------------------------------------------------------
@@ -376,9 +407,9 @@ function Save_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-global s ct t p g ocean n longs lats
+global SA CT t p g ocean n long lat
 
-%global s1 t1
+%global s1 t1 
 
 %s = s1; t = t1;
 
@@ -386,14 +417,19 @@ cmd = ['cd ', handles.open_path]; eval(cmd)
 
 [file,path] = uiputfile('*.mat','save data as');
 
-cmd = ['save ', path, file, ' s ct t p g ocean n longs lats '], eval(cmd)
+cmd = ['save ', path, file, ' SA CT t p g ocean n long lat '], eval(cmd)
 
 plast = handles.open_path;
 
-cd /home/bar747/matlab/gamma_i/data
-% z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/data']; eval(cmd)
+%cd d:/neutrals/ness8/data
+% z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/data']; eval(cmd) 
+default_dir = which('create_data.m');
+cd ([default_dir(1:end-14)])
 
-save handles_last plast
+save handles_last plast 
+
+
+
 
 
 function edit5_Callback(hObject, eventdata, handles)
@@ -403,7 +439,6 @@ function edit5_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
-
 
 
 % --- Executes during object creation, after setting all properties.
@@ -420,13 +455,15 @@ end
 
 
 
+
+
 function z1_Callback(hObject, eventdata, handles)
-% hObject    handle to grid_res_longs_edit (see GCBO)
+% hObject    handle to grid_res_long_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of grid_res_longs_edit as text
-%        str2double(get(hObject,'String')) returns contents of grid_res_longs_edit as a double
+% Hints: get(hObject,'String') returns contents of grid_res_long_edit as text
+%        str2double(get(hObject,'String')) returns contents of grid_res_long_edit as a double
 
 
 
@@ -446,61 +483,111 @@ guidata(hObject, handles);
 
 
 
+
 % --- Executes on button press in create_data_pushbutton.
 function create_data_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to create_data_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-global s ct t p g longs lats ocean n
+global SA CT t p g long lat ocean n
 
-check_data
+%check_data
+%--------------------------------------------------------------------------
+% delete casts with internal missing data and less than three levels
+%--------------------------------------------------------------------------                           
+Icast = find(isfinite(SA(1,:)));
+[nz, nxy] = size(SA);
+ss = SA(:,Icast);
+z = flipud(ss);
+[nzz, nxx] = size(z);
+zz = nans(1,nxx);
+for i = 1:nxx
+    indss = find(isfinite(z(:,i)));
+    zz(i) = nz - indss(1);
+end
+
+% (i) delete shallow
+Idelete = find(n(Icast) < zz);
+%number_of_shallow_casts = length(Idelete);
+%salt = SA(:,inds(Idelete));
+SA(:,Icast(Idelete)) = nan;
+CT(:,Icast(Idelete)) = nan;
+%t(:,Icast(Idelete)) = nan;
+  p(:,Icast(Idelete)) = nan;
+g(:,Icast(Idelete)) = nan;
+ocean(Icast(Idelete)) = nan;
+n(Icast(Idelete)) = nan;
+
+%(ii) delete less than 3 bottles
+Idelete = find(n < 3); 
+%number_of_casts_less_than_3_bottles = length(Idelete);
+%salt = s(:,inds_delete)
+SA(:,Idelete) = nan;
+CT(:,Idelete) = nan;
+%t(:,Idelete) = nan;
+  p(:,Icast(Idelete)) = nan;
+g(:,Idelete) = nan;
+ocean(Idelete) = nan;
+n(Idelete) = nan;
+
+%--------------------------------------------------------------------------
+
 
 % replicate a section
+long_mean = nanmean(long(:))
 
-longs_mean = nanmean(longs(:))
-
-dims = size(t);
-if length(dims)==2 && dims(2)>1
-    longs_range = max(longs)-min(longs);
-    lats_range = max(lats)-min(lats);
-    if longs_range<lats_range
-        xx = lats
-    elseif longs_range>lats_range
-        xx = longs
+dims = size(CT);
+if (length(dims) == 2) && (dims(2) > 1)
+    long_range = max(long) - min(long); 
+    lat_range = max(lat) - min(lat);
+    if long_range < lat_range
+        xx = lat
+    elseif long_range > lat_range
+        xx = long
     else
         error(' ERROR 1 in create_data_pushbutton')
     end
     pp = nanmean(p(:,:)');
-    figure, whos
-    fpcolor(xx,pp,squeeze(t(:,:)))
+   
+    whos
+    
+    figure
+    fpcolor(xx,pp,squeeze(CT(:,:)))
     set(gca,'ydir','reverse','color',[0 0 0]), %figure(gcf)
-    [nz,ny] = size(s);
-    s = reshape(repmat(s,1,3),[nz,ny,3] ); t = reshape(repmat(t,1,3),[nz,ny,3] );
-    p = reshape(repmat(p,1,3),[nz,ny,3] );
-    longs_mean = mean(longs(:)); longs = [longs_mean-0.1; longs_mean; longs_mean+0.1];
-    ocean = reshape(repmat(ocean(:),1,3),[ny,3] ); n = reshape(repmat(n(:),1,3),[ny,3] );
+    [nz,ny] = size(SA);
+    SA = reshape(repmat(SA,1,3),[nz,ny,3] );
+    CT = reshape(repmat(CT,1,3),[nz,ny,3] ); 
+    %t = reshape(repmat(t,1,3),[nz,ny,3] ); 
+    p = reshape(repmat(p,1,3),[nz,ny,3] ); 
+    long_mean = mean(long(:));
+    long = [long_mean-0.1; long_mean; long_mean+0.1];
+    ocean = reshape(repmat(ocean(:),1,3),[ny,3] );
+    n = reshape(repmat(n(:),1,3),[ny,3] );
 end
 
-% adjust longs and lats if needs be
-
-dims = size(longs)
-if sum(size(longs)==size(n))~=2
-    [longs,lats] = meshgrid(longs,lats);
+% adjust long and lat if needs be
+dims = size(long)
+if sum(size(long) == size(n))~=2
+    [long,lat] = meshgrid(long,lat);
 end
 
-% compute ct if needs be
+% compute CT if needs be
+% if exist('CT','var')==0 | length(CT)==0 | sum(size(SA)==size(t))~=sum(size(CT)==size(t))
+%     dj_disp('computing CT ...')
+%     CT = nan(size(SA));
+%     data = SA.*t.*p;
+%     Idata = find(isfinite(data)); 
+% %     ss = s(inds);
+% %     tt = t(inds); 
+% %     pp = p(inds);
+%     CT(Idata) = gsw_CT_from_t(SA(Idata),t(Idata),p(Idata));
+% %     ct = nans(size(t));
+% %     ct(inds) = ctt;
+% end
 
-if length(ct)==0 | sum(size(s)==size(t))~=sum(size(ct)==size(t))
-    dj_disp('computing ct ...')
-    inds = find(isfinite(t));
-    ss = s(inds); tt = t(inds); pp = p(inds);
-    ctt = ct_from_t(ss,tt,pp);
-    ct = nan*ones(size(t)); ct(inds) = ctt;
-end
-
-whos('global'),  dj_toc
-
+whos('global')
+dj_toc
 
 
 function grid_res_depth_edit_Callback(hObject, eventdata, handles)
@@ -512,25 +599,32 @@ function grid_res_depth_edit_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of grid_res_depth_edit as a double
 
 
-
 % --- Executes on button press in grid_res_ok_pushbutton.
 function grid_res_ok_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to grid_res_ok_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global s t p g ocean n longs lats
+global SA CT t p g ocean n long lat
 
-[nz,ny,nx] = size(s)
+[nz,ny,nx] = size(SA)
 
-eval(['ix = ', handles.grdx, ',']); eval(['jy = ', handles.grdy, ',']);
+% eval(['ix = ', handles.grdx, ',']);
+% eval(['jy = ', handles.grdy, ',']);
+keyboard
+ix = handles.grdx;
+eval(['jy = ', handles.grdy, ',']);
 
-s = s(:,jy,ix); t = t(:,jy,ix); p = p(:,jy,ix);
+SA = SA(:,jy,ix);
+CT = CT(:,jy,ix);
+%t = t(:,jy,ix);
+p = p(:,jy,ix); 
 
-if exist('g'), g = g(:,jy,ix); end
-if exist('ocean'), ocean = ocean(jy,ix); end
-if exist('n'), n = n(jy,ix); end
-if exist('longs'), longs = longs(jy,ix); end
-if exist('lats'), lats = lats(jy,ix); end
+if exist('g','var'), g = g(:,jy,ix); end
+if exist('ocean','var'), ocean = ocean(jy,ix); end
+if exist('n','var'), n = n(jy,ix); end
+if exist('long','var'), long = long(jy,ix); end
+if exist('lat','var'), lat = lat(jy,ix); end
 
 whos
+
 

@@ -1,0 +1,11 @@
+function rms = dj_rms(v)
+
+%%
+% function rms = dj_rms(v)
+%
+% v                  vector
+%
+
+rms = norm(v)/sqrt(length(v));
+
+return

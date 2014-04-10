@@ -27,11 +27,11 @@ function varargout = gamma_invert(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-    'gui_Singleton',  gui_Singleton, ...
-    'gui_OpeningFcn', @gamma_invert_OpeningFcn, ...
-    'gui_OutputFcn',  @gamma_invert_OutputFcn, ...
-    'gui_LayoutFcn',  [] , ...
-    'gui_Callback',   []);
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @gamma_invert_OpeningFcn, ...
+                   'gui_OutputFcn',  @gamma_invert_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -56,19 +56,27 @@ function gamma_invert_OpeningFcn(hObject, eventdata, handles, varargin)
 
 clc
 
-z = matlabroot; cmd = ['cd ', z(1), 'home/bar747/matlab/gamma_i/inversion']; eval(cmd)
+gamma_invert_dir = which('gamma_invert.m');
+cd ([gamma_invert_dir(1:end-15)])
+% z = matlabroot; 
+% cmd = ['cd ', z(1), ':/neutrals/ness8/inversion']; 
+% eval(cmd) 
 
 set(0,'DefaultFigureColor',[0.961 0.988 0.965])
 
 handles.output = hObject;
+handles.inv_meth = 1;
+handles.eos = 'eos80_t'; 
+handles.zbc = 0;
+handles.quad = 0;
+handles.linb = 0;
+handles.h2vwt = 1;
+handles.helwt = 1e-6;
+handles.bdrywt = 1e-5;
 
-handles.inv_meth = 1; handles.eos = 'eos80_t';
-
-handles.zbc = 0; handles.quad = 0; handles.linb = 0;
-
-handles.h2vwt = 1; handles.helwt = 1e-6; handles.bdrywt = 1e-5;
-
-load handles_last, handles.open_path = plast; clear plast
+load handles_last 
+ handles.open_path = plast; 
+ clear plast
 
 handles.maxits = 100;
 
@@ -76,7 +84,7 @@ handles.maxits = 100;
 guidata(hObject, handles);
 
 % my_computer = set_computer
-%
+% 
 % if strcmp(my_computer,'laptop')
 %    set(gcf,'Position',[1,1,626,438])
 % elseif strcmp(my_computer,'desktop')
@@ -89,7 +97,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = gamma_invert_OutputFcn(hObject, eventdata, handles)
+function varargout = gamma_invert_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -105,48 +113,51 @@ function init_pushbutton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-global s t ct p z g longs lats ocean n
+global s t ct p z g longs lats ocean n 
 
 global k_east r_east k_west r_west k_north r_north k_south r_south
 
 clc, dj_tic
 
-compute_east = 0; compute_west = 0; compute_north = 0; compute_south = 0;
+%compute_east = 0; compute_west = 0; compute_north = 0; compute_south = 0;
 
-%compute_east = 1; compute_west = 1; compute_north = 1; compute_south = 1;
-
+compute_east = 1; compute_west = 1; compute_north = 1; compute_south = 1;
+ 
 compute_helicities = 0;
 
-compute_vertical = 0;
+compute_vertical = 0; 
 
 compute_vertical_xzb = 0;
 
-compute_gvals = 1;
+compute_gvals = 1; 
 
 bc = handles.zbc;
 
-if strcmp(handles.eos,'eos80_t')
-    eosno = 1
-elseif strcmp(handles.eos,'eos05_th')
-    eosno = 2
+if strcmp(handles.eos,'eos80_t')    
+	eosno = 1      
+elseif strcmp(handles.eos,'eos05_th')  
+	eosno = 2      
 elseif strcmp(handles.eos,'eos05_ct')
-    eosno = 3
+	eosno = 3    
 end
 
-if size(ct)==0
+if size(ct) == 0
     dj_disp('computing conservative temperature ... to fix for eos80_t')
     inds = find(isfinite(s(1,:)));
-    ss = s(:,inds); tt = t(:,inds); pp = p(:,inds);
+    ss = s(:,inds);
+    tt = t(:,inds);
+    pp = p(:,inds);
     ctt = ct_from_t(ss,tt,pp);
-    ct = nan*ones(size(s)); ct(:,inds) = ctt;
+    ct = nan*ones(size(s)); 
+    ct(:,inds) = ctt;
 end
 
-%figure
+figure
 
 if compute_east==1
     dj_disp('computing easterly intersections ...')
     handles
-    
+
     if strcmp(handles.eos,'eos80_t')
         [k_east,r_east] = intersections_east(s,t,p,ocean,n,longs,lats,handles);
     elseif strcmp(handles.eos,'eos05_th')
@@ -160,7 +171,7 @@ if compute_east==1
 else
     load intersections/intersections_east
 end
-
+       
 if compute_west==1
     dj_disp('computing westerly intersections ...')
     if strcmp(handles.eos,'eos80_t')
@@ -172,11 +183,11 @@ if compute_west==1
         [k_west,r_west] = intersections_west(s,ct,p,ocean,n,longs,lats,eosno);
     end
     save intersections/intersections_west k_west r_west
-    dj_toc
+	dj_toc
 else
     load intersections/intersections_west
 end
-
+    
 if compute_north==1
     dj_disp('computing northerly intersections ...')
     if strcmp(handles.eos,'eos80_t')
@@ -188,12 +199,12 @@ if compute_north==1
         [k_north,r_north] = intersections_north(s,ct,p,ocean,n,longs,lats,eosno);
     end
     save intersections/intersections_north k_north r_north
-    dj_toc
+	dj_toc
 else
     load intersections/intersections_north
 end
 
-if compute_south==1
+if compute_south == 1
     dj_disp('computing southerly intersections ...')
     if strcmp(handles.eos,'eos80_t')
         [k_south,r_south] = intersections_south(s,t,p,ocean,n,longs,lats,handles);
@@ -204,43 +215,44 @@ if compute_south==1
         [k_south,r_south] = intersections_south(s,ct,p,ocean,n,longs,lats,eosno);
     end
     save intersections/intersections_south k_south r_south
-    dj_toc
+	dj_toc
 else
     load intersections/intersections_south
 end
 
-if compute_helicities==4
+if compute_helicities == 4
     dj_disp('computing helicity ...')
     [h,h_east,h_north,h_west,h_south] = helicities_4(s,t,ct,p,ocean,n,longs,lats,bc);
-    save intersections/helicities h h_east h_north h_west h_south
-    dj_toc
+ 	save intersections/helicities h h_east h_north h_west h_south
+	dj_toc
 else
     load intersections/helicities
 end
 
-if compute_vertical==1
+if compute_vertical == 1
     dj_disp('computing vertical vitals ... to fix for eos80_t')
     [k_vert,r_vert,gprod_vert,no_eqs] = vertical_vitals(s,ct,p,g,ocean,n,longs,lats,handles);
-    save intersections/vertical_vitals k_vert r_vert gprod_vert no_eqs
-    dj_toc
+ 	save intersections/vertical_vitals k_vert r_vert gprod_vert no_eqs
+	dj_toc
 else
     load intersections/vertical_vitals
 end
 
-if compute_vertical_xzb==1;
+if compute_vertical_xzb == 1;
     [gc1,gc2,gc3,gc4,gc5,nxz_beqs] = bxz_equations(s,ct,p,g,ocean,n,longs,lats,handles);
     save intersections/bxz_equations gc1 gc2 gc3 gc4 gc5 nxz_beqs
 else
     load intersections/bxz_equations
 end
 
-if compute_gvals==1
+if compute_gvals == 1
     dj_disp('computings deciles  ... ')
-    boundary_gammas
-    save /home/bar747/matlab/gamma_i/inversion/intersections/gamma_boundary inds_bg g_bdry
-    dj_toc
+    [inds_bg, g_bdry] = boundary_gammas(g,long,lat,n);
+    gamma_invert_dir = which('gamma_invert.m');
+ 	save ([[gamma_invert_dir(1:end-15)],'/intersections/gamma_boundary inds_bg g_bdry'])
+	dj_toc
 else
-    load intersections/vertical_vitals
+    load intersections/gamma_boundary
 end
 
 % --- Executes on button press in zonalbc_quadratic_radiobutton.
@@ -426,9 +438,14 @@ clear global, clc, dj_tic
 global s t ct p z g longs lats ocean n
 
 %z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/inversion']; eval(cmd)
-handles.open_path
-cmd = ['cd ', handles.open_path]; eval(cmd)
 
+try
+    handles.open_path
+    cmd = ['cd ', handles.open_path]; eval(cmd)
+catch
+    gamma_invert_dir = which('gamma_invert.m');
+    handles.open_path = gamma_invert_dir(1:end-15);
+end
 [FileName,PathName] = uigetfile('*.mat');
 
 cmd = ['load ', PathName, FileName]; eval(cmd)
@@ -438,23 +455,33 @@ handles.open_path = PathName
 % Update handles structure
 guidata(hObject, handles);
 
-z = matlabroot; cmd = ['cd ', z(1), 'home/bar747/matlab/gamma_i/inversion']; eval(cmd)
+%z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/inversion']; eval(cmd) 
+gamma_invert_dir = which('gamma_invert.m');
+cd ([gamma_invert_dir(1:end-15)])
 
 if length(size(p))<3
     [nz,ny,nx] = size(s);
-    p = reshape(p(:)*ones(1,nx*ny),nz,ny,nx);
+    p = reshape(p(:)*ones(1,nx*ny),nz,ny,nx); 
 end
 
-indss = find(~finite(s(1,:))); s(:,indss) = nan; t(:,indss) = nan; p(:,indss) = nan; g(:,indss) = nan;
+% unknown
+% indss = find(~isfinite(s(1,:)));
+% s(:,indss) = nan;
+% t(:,indss) = nan;
+% p(:,indss) = nan;
+% g(:,indss) = nan; 
 
 if exist('ocean')~=1 | length(ocean)==0
     disp( 'computing oceans and depth ...')
     cd ../data, oceans_and_n, cd ../inversion, dj_pause(1)
 end
 
-ok = 'loaded data', whos('global'), dj_toc
+ok = 'loaded data'
+whos('global')
+dj_toc
 
-plast = handles.open_path; save handles_last plast
+plast = handles.open_path;
+save handles_last plast 
 
 
 
@@ -468,7 +495,10 @@ global s t ct p z g longs lats ocean n
 
 global gn limit_panel2
 
-z = matlabroot; cmd = ['cd ', z(1), 'home/bar747/matlab/gamma_i/inversion']; eval(cmd)
+gamma_invert_dir = which('gamma_invert.m');
+cd ([gamma_invert_dir(1:end-15)])
+
+% z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/inversion']; eval(cmd) 
 
 gn = g;
 
@@ -482,18 +512,28 @@ function Save_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-global s t ct p z g longs lats ocean n
+global s t ct p z g longs lats ocean n 
 
-%z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/inversion']; eval(cmd)
-cmd = ['cd ', handles.open_path]; eval(cmd)
+%z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/inversion']; eval(cmd) 
+try
+    cmd = ['cd ', handles.open_path]; eval(cmd)
+catch
+    gamma_invert_dir = which('gamma_invert.m');
+    cd ([gamma_invert_dir(1:end-15)])
+end
 
-[file,path] = uiputfile('*.mat','save data as'); ok = 'here'
+[file,path] = uiputfile('*.mat','save data as');
+ok = 'here'
 
 cmd = ['save ', path, file, ' s t ct p z g longs lats ocean n'], eval(cmd)
 
-z = matlabroot; cmd = ['cd ', z(1), 'home/bar747/matlab/gamma_i/inversion']; eval(cmd)
+gamma_invert_dir = which('gamma_invert.m');
+cd ([gamma_invert_dir(1:end-15)])
 
-plast = handles.open_path; save handles_last plast
+% z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/inversion']; eval(cmd) 
+
+plast = handles.open_path
+save handles_last plast 
 
 
 

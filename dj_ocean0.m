@@ -1,6 +1,6 @@
 function ocean = dj_ocean0(long,lat)
 
-%%   dj_ocean0        ocean of single long/lat observation
+%   dj_ocean0        ocean of single long/lat observation
 %
 %    Usage:     		ocean = 	dj_ocean0(long,lat)
 %
@@ -58,7 +58,7 @@ end
 i_pacific = inpolygon(long,lat,po_long,po_lat);
 
 
-%% pacific ocean
+% pacific ocean
 
 if i_pacific == 1
 
@@ -68,7 +68,7 @@ if i_pacific == 1
 	ocean = 1;
   end
 
-%% indian ocean
+% indian ocean
 
 elseif 20<=long && long<=150 && -90<=lat && lat<=30
   
@@ -78,7 +78,7 @@ elseif 20<=long && long<=150 && -90<=lat && lat<=30
 	ocean = 3;
   end
     
-%% atlantic ocean
+% atlantic ocean
      
 elseif (0<=long && long<=20 && -90<=lat && lat<=90) || ...
        (20<=long && long<=40 && 28<=lat && lat<=44) || ...
@@ -94,7 +94,7 @@ elseif (0<=long && long<=20 && -90<=lat && lat<=90) || ...
 	    ocean = 7;
 	end
 
-%% arctic ocean
+% arctic ocean
 
 elseif 0<=long && long<=360 && 64<lat && lat<=90
    
@@ -115,26 +115,26 @@ else
 end
 
 
-%% red sea
+% red sea
 
 if 31.25<=long && long<=43.25 && 13<=lat && lat<=30.1
    
 	ocean = 9;
       
-%% persian gulf
+% persian gulf
      
 elseif 40<=long && long<=56 && 22<=lat && lat<=32
    
 	ocean = 9;
 
-%% baltic sea
+% baltic sea
 
 elseif 12<=long && long<=33.5 && 50<=lat && lat<=60
 	ocean = 9;
 elseif 16<=long && long<=33.5 && 60<=lat && lat<=66
 	ocean = 9;
 
-%% black/caspian seas
+% black/caspian seas
 
 elseif 40<=long && long<=112 && 30<=lat && lat<=60
 	ocean = 10;

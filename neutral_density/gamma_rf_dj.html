@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of gamma_rf</title>
+  <meta name="keywords" content="gamma_rf">
+  <meta name="description" content="%      label with gamma_rf">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; gamma_rf.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>gamma_rf
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>%      label with gamma_rf</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">%      label with gamma_rf</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="is_a_section.html" class="code" title="function answer = is_a_section(s,t)">is_a_section</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="neutral_density.html" class="code" title="function varargout = neutral_density(varargin)">neutral_density</a>	NEUTRAL_DENSITY M-file for neutral_density.fig</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 
+0002 <span class="comment">%%      label with gamma_rf</span>
+0003 
+0004 dj_tic
+0005 
+0006 inds = find(finite(s));
+0007 
+0008 ss = s(inds); ctt = ct(inds); pp = p(inds); 
+0009 
+0010 cd gfunction
+0011     gg = gfunc(ss,ctt);
+0012 cd ..
+0013 
+0014 g = nan*ones(size(s)); g(inds) = gg;
+0015 
+0016 <span class="keyword">if</span> <a href="is_a_section.html" class="code" title="function answer = is_a_section(s,t)">is_a_section</a>(s,ct) == 1
+0017     g(:,:,1) = g(:,:,2); g(:,:,3) = g(:,:,2);
+0018     ok = <span class="string">'section fixed'</span>
+0019 <span class="keyword">end</span>
+0020 
+0021 
+0022 
+0023 <span class="comment">%%      and plot</span>
+0024 
+0025 smin = nanmin(s(:)); smax = nanmax(s(:)); sby = (smax-smin)/100;
+0026 
+0027 ctmin = nanmin(ct(:)); ctmax = nanmax(ct(:)); ctby = (ctmax-ctmin)/100;
+0028 
+0029 s0 = smin:sby:smax; ct0 = ctmin:ctby:ctmax; ns = length(s0); nct = length(ct0);
+0030 
+0031 [ss,ctt] = meshgrid(s0,ct0); ss = ss(:); ctt = ctt(:);
+0032 
+0033 cd gfunction
+0034     g0 = gfunc(ss,ctt); g0 = reshape(g0,size(ss));
+0035 cd ..
+0036 
+0037 g0 = reshape(g0,nct,ns);
+0038 
+0039 figure(5)
+0040     fpcolor(s0,ct0,g0), colorbar
+0041     inds = find(finite(s(:))); ss = s(inds); ctt = ct(inds);
+0042     hold on, plot(ss,ctt,<span class="string">'w.'</span>)
+0043     contour(s0,ct0,g0,20,<span class="string">'k'</span>), hold off
+0044     
+0045 
+0046</pre></div>
+<hr><address>Generated on Thu 17-Apr-2008 14:32:37 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

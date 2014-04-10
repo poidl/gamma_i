@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of p_on_g_surfaces</title>
+  <meta name="keywords" content="p_on_g_surfaces">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; p_on_g_surfaces.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>p_on_g_surfaces
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="neutral_density.html" class="code" title="function varargout = neutral_density(varargin)">neutral_density</a>	NEUTRAL_DENSITY M-file for neutral_density.fig</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="keyword">global</span> sns ctns pns
+0002 
+0003 [ng,ny,nx] = size(sns); indsp = find(finite(pns));
+0004 
+0005 <span class="comment">% pns_srtd = sort(pns(indsp)); nn = length(pns_srtd);</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% n20 = round(0.2*nn); n40 = round(0.4*nn); n60 = round(0.6*nn); n80 = round(0.8*nn);</span>
+0008 
+0009 nloop = 0; np = 5; ncmap = 64;
+0010 
+0011 cmap = flipud(colormap(jet(ncmap)));
+0012 
+0013 h1 = figure;
+0014 
+0015 <span class="comment">%</span>
+0016 <span class="comment">% [pns_srtd(n20), pns_srtd(n40), pns_srtd(n60), pns_srtd(n80)]</span>
+0017 
+0018 <span class="keyword">for</span> k = 1:np
+0019     
+0020   <span class="keyword">if</span> k==1
+0021       inds = find(pns(:)&lt;=250);
+0022   <span class="keyword">elseif</span> k==2
+0023       inds = find(250&lt;pns(:)&amp;pns(:)&lt;=1500);
+0024   <span class="keyword">elseif</span> k==3
+0025       inds = find(1500&lt;pns(:)&amp;pns(:)&lt;=2500);
+0026   <span class="keyword">elseif</span> k==4
+0027       inds = find(2500&lt;pns(:)&amp;pns(:)&lt;=3500);
+0028   <span class="keyword">else</span>
+0029       inds = find(3500&lt;pns(:));
+0030   <span class="keyword">end</span>
+0031       
+0032       nloop = nloop+1; [nloop,length(inds)]
+0033       
+0034       ss = sns(inds); ctt = ctns(inds); pp = pns(inds);
+0035 
+0036 
+0037 <span class="comment">%      cttt = ct_from_t(sss,ttt,ppp);</span>
+0038 
+0039       ind_map = 1+round(((k-1)/(np-1))*(ncmap-1));
+0040    
+0041       figure(h1)
+0042         plot(ss,ctt,<span class="string">'.'</span>,<span class="string">'color'</span>,cmap(ind_map,:))
+0043         <span class="keyword">if</span> nloop==1, grid on, hold on,  <span class="keyword">end</span>
+0044     
+0045       figure(h1+1)
+0046         plot(ctt,pp,<span class="string">'.'</span>,<span class="string">'color'</span>,cmap(ind_map,:))
+0047         <span class="keyword">if</span> nloop==1, grid on, hold on,  <span class="keyword">end</span>
+0048         set(gca,<span class="string">'ydir'</span>,<span class="string">'reverse'</span>)
+0049             
+0050 <span class="comment">%       figure(3)</span>
+0051 <span class="comment">%         plot(ss,pp,'.','color',cmap(ind_map,:))</span>
+0052 <span class="comment">%         if nloop==1, grid on, hold on,  end</span>
+0053 <span class="comment">%         set(gca,'ydir','reverse')</span>
+0054         
+0055       pause(1)
+0056 
+0057 <span class="keyword">end</span>
+0058 
+0059 
+0060 <span class="comment">%           add freezing line</span>
+0061 
+0062 figure(1)
+0063 
+0064 axs = axis;
+0065 
+0066 s0 = axs(1):0.1:axs(2);
+0067 p0 = zeros(size(s0));
+0068 ct0 = fp_ct(s0,p0);
+0069 plot(s0,ct0,<span class="string">'k'</span>), hold off
+0070 
+0071 
+0072 <span class="keyword">return</span>
+0073</pre></div>
+<hr><address>Generated on Thu 17-Apr-2008 14:32:37 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

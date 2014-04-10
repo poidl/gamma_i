@@ -1,0 +1,530 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of get_gradients</title>
+  <meta name="keywords" content="get_gradients">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; get_gradients.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>get_gradients
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [ave,percent2,epsilon_x,epsilon_y] = get_gradients(handles) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="compile_qgrads_t.html" class="code" title="">compile_qgrads_t</a>	gamma_library =  'd:/mySoftware/gamma_n/fortran/double_precision/gamma_dp.lib';</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="neutral_density.html" class="code" title="function varargout = neutral_density(varargin)">neutral_density</a>	NEUTRAL_DENSITY M-file for neutral_density.fig</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ave,percent2,epsilon_x,epsilon_y] = get_gradients(handles)</a>
+0002 
+0003 <span class="keyword">global</span> s t p g ocean n longs lats
+0004 
+0005 <span class="keyword">global</span> ntpx ntpy nsx nsy logD gmean gstd
+0006 
+0007 <span class="keyword">global</span> called_ggrads
+0008 
+0009 <span class="keyword">global</span> gn limit_panel2
+0010 
+0011 dj_disp(<span class="string">'computing Veronis errors ...'</span>), dj_disp(<span class="string">''</span>)
+0012 
+0013 dj_tic
+0014 
+0015 figure_no = 0;
+0016 
+0017 <span class="keyword">if</span> handles.ntp==1
+0018     ntp_surfaces = 1;
+0019 <span class="keyword">else</span>
+0020     ntp_surfaces = 0 ;
+0021 <span class="keyword">end</span>
+0022 
+0023 <span class="keyword">if</span> handles.ns==1
+0024     ns_surfaces = 1;
+0025     surface_comparison = 2;
+0026 <span class="keyword">else</span>
+0027     ns_surfaces = 0 ;
+0028 <span class="keyword">end</span>
+0029 
+0030 <span class="keyword">if</span> handles.gfunc==1
+0031     gfunc_surfaces = 1;
+0032     surface_comparison = 3;
+0033 <span class="keyword">else</span>
+0034     gfunc_surfaces = 0 ;
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="keyword">if</span> handles.sigp==1
+0038     sigp_surfaces = 1;
+0039     surface_comparison = 4;
+0040 <span class="keyword">else</span>
+0041     sigp_surfaces = 0 ;
+0042 <span class="keyword">end</span>
+0043 
+0044 by_volume = 1; 
+0045 
+0046 
+0047 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0048 
+0049 options = zeros(2,1);
+0050 
+0051 <span class="keyword">if</span> called_ggrads==0
+0052     <a href="compile_qgrads_t.html" class="code" title="">compile_qgrads_t</a>
+0053     called_ggrads = 1;
+0054 <span class="keyword">end</span>
+0055 
+0056 [nz,ny,nx] = size(s);
+0057 
+0058 indss = find(finite(s));
+0059 
+0060 ss = s(indss); tt = t(indss); pp = p(indss);
+0061 
+0062 s = change(s,<span class="string">'=='</span>,nan,-99); t = change(t,<span class="string">'=='</span>,nan,-99);
+0063 p = change(p,<span class="string">'=='</span>,nan,-99); g = change(g,<span class="string">'=='</span>,nan,-99); 
+0064 ocean = change(ocean,<span class="string">'=='</span>,nan,-99); n = change(n,<span class="string">'=='</span>,nan,-99);
+0065 <span class="comment">%longs = longs(:); lats = lats(:); [longs2,lats2] = meshgrid(longs,lats);</span>
+0066 
+0067 inds = find(s==-99); 
+0068     
+0069 <span class="keyword">if</span> by_volume==1
+0070     
+0071     cos_mat = cos(pi*lats/180);
+0072 <span class="comment">%    cos_mat = cos_mat*ones(1,nx);</span>
+0073     cos_mat = reshape(ones(nz,1)*cos_mat(:)',nz,ny,nx);
+0074     cos_mat(inds) = nan;
+0075 
+0076     p_mid = (p(1:nz-1,:,:)+p(2:nz,:,:))/2;
+0077 
+0078     dp(1,:,:) = p_mid(1,:,:)-p(1,:,:); 
+0079     dp(2:nz-1,:,:) = diff(p_mid(:,:,:));
+0080     dp(nz,:,:) = p(nz,:,:)-p_mid(nz-1,:,:);
+0081 
+0082     i3 = zeros(size(dp));
+0083 
+0084     inds3 = find(finite(dp)); i3(inds3) = 1; 
+0085 
+0086     zz = i3.*cos_mat.*dp;
+0087 
+0088 <span class="comment">%    ocean_volume = nansum(zz(:))*111.2d3*111.2d3</span>
+0089 <span class="comment">%    inferred_mean_depth = ocean_volume/3.6e14</span>
+0090 <span class="keyword">end</span> 
+0091 
+0092 
+0093 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0094 
+0095 <span class="comment">%disp('computing ...')</span>
+0096 
+0097 <span class="keyword">if</span> ntp_surfaces == 1
+0098 <span class="comment">%    disp('  neutral tangent plane gradients ...')</span>
+0099 <span class="comment">%    dj_tic</span>
+0100 <span class="comment">%    if handles.temp==1</span>
+0101         options(1) = 1; 
+0102         [ntpx,ntpy] = quick_gradients(s,t,p,g,ocean,n,longs,lats,options);
+0103 <span class="comment">%    elseif handles.temp==3</span>
+0104 <span class="comment">%        [ntpx,ntpy] = ntp_gradients(s,ct,p,g,ocean,n,longs,lats);</span>
+0105 <span class="comment">%    end</span>
+0106 <span class="comment">%    dj_toc</span>
+0107     ntpx = change(ntpx,<span class="string">'=='</span>,-99,nan); ntpy = change(ntpy,<span class="string">'=='</span>,-99,nan);
+0108     ntpx = reshape(ntpx,nz,ny,nx); ntpy = reshape(ntpy,nz,ny,nx);
+0109     inds = find(finite(ntpx+ntpy));
+0110 <span class="comment">%    cmd = ['save data/', dataset_str, '/ntp', region_str, temp_str, ' ntpx ntpy'];</span>
+0111 <span class="comment">%    eval(cmd)</span>
+0112     save ./data/ntp_gradients ntpx ntpy
+0113 <span class="keyword">else</span>
+0114 <span class="comment">%    cmd = ['load data/', dataset_str, '/ntp', region_str, temp_str];</span>
+0115 <span class="comment">%    eval(cmd)</span>
+0116     load ./data/ntp_gradients
+0117 <span class="keyword">end</span>
+0118 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0119 
+0120 <span class="keyword">if</span> ns_surfaces == 1
+0121 <span class="comment">%    dj_disp('  neutral density gradients ...')</span>
+0122 <span class="comment">%    dj_tic</span>
+0123 <span class="comment">%    if handles.temp==1</span>
+0124         options(1) = 2;
+0125         inds_s = find(s~=-99); ns = length(inds_s);
+0126         inds_g = find(g~=-99); ng = length(inds_g); 
+0127       [nsx,nsy] = quick_gradients(s,t,p,g,ocean,n,longs,lats,options);
+0128 <span class="comment">%    elseif handles.temp==3</span>
+0129 <span class="comment">%        [nsx,nsy] = ns_gradients(s,ct,p,g,ocean,n,longs,lats);</span>
+0130 <span class="comment">%    end</span>
+0131 <span class="comment">%    dj_toc</span>
+0132     nsx = change(nsx,<span class="string">'=='</span>,-99,nan); nsy = change(nsy,<span class="string">'=='</span>,-99,nan);
+0133     nsx = reshape(nsx,nz,ny,nx); nsy = reshape(nsy,nz,ny,nx);
+0134 <span class="comment">%    cmd = ['save data/', dataset_str, '/ns', region_str, temp_str, ' nsx nsy'];</span>
+0135 <span class="comment">%    eval(cmd)</span>
+0136     save ./data/ns_gradients nsx nsy
+0137 <span class="keyword">elseif</span> surface_comparison==2
+0138 <span class="comment">%    cmd = ['load data/', dataset_str, '/ns', region_str, temp_str];</span>
+0139 <span class="comment">%    eval(cmd)</span>
+0140     load ./data/ns_gradients
+0141 <span class="keyword">end</span>
+0142 
+0143 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0144 
+0145 <span class="keyword">if</span> gfunc_surfaces == 1
+0146     dj_disp(<span class="string">'  gamma_a gradients ...'</span>)
+0147 <span class="comment">%    dj_tic</span>
+0148 <span class="comment">%    if handles.temp==1</span>
+0149         options(1) = 3;
+0150 <span class="comment">%         inds_s = find(s~=-99); ns = length(inds_s);</span>
+0151 <span class="comment">%         inds_g = find(g~=-99); ng = length(inds_g);</span>
+0152 <span class="comment">%         percent_labeled = 100*ng/ns</span>
+0153         [nsx,nsy] = quick_gradients(s,t,p,g,ocean,n,longs,lats,options);
+0154 <span class="comment">%    elseif handles.temp==3</span>
+0155 <span class="comment">%        [nsx,nsy] = ns_gradients(s,ct,p,g,ocean,n,longs,lats);</span>
+0156 <span class="comment">%    end</span>
+0157 <span class="comment">%    dj_toc</span>
+0158     nsx = change(nsx,<span class="string">'=='</span>,-99,nan); nsy = change(nsy,<span class="string">'=='</span>,-99,nan);
+0159     nsx = reshape(nsx,nz,ny,nx); nsy = reshape(nsy,nz,ny,nx);
+0160 <span class="comment">%    cmd = ['save data/', dataset_str, '/ns', region_str, temp_str, ' nsx nsy'];</span>
+0161 <span class="comment">%    eval(cmd)</span>
+0162     save data/gammaa_gradients nsx nsy
+0163 <span class="keyword">elseif</span> surface_comparison==3
+0164 <span class="comment">%    cmd = ['load data/', dataset_str, '/ns', region_str, temp_str];</span>
+0165 <span class="comment">%    eval(cmd)</span>
+0166     load data/gammaa_gradients
+0167 <span class="keyword">end</span>
+0168 
+0169 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0170 
+0171 <span class="keyword">if</span> sigp_surfaces == 1
+0172     disp(<span class="string">'  sigma_p gradients ...'</span>)
+0173 <span class="comment">%    dj_tic</span>
+0174 <span class="comment">%    if handles.temp==1</span>
+0175         options(1) = 4; options(2) = handles.pr0;
+0176         [sigpx,sigpy] = quick_gradients(s,t,p,g,ocean,n,longs,lats,options);
+0177 <span class="comment">%    elseif handles.temp==3</span>
+0178 <span class="comment">%        [ntpx,ntpy] = ntp_gradients(s,ct,p,g,ocean,n,longs,lats);</span>
+0179 <span class="comment">%    end</span>
+0180 <span class="comment">%    dj_toc</span>
+0181     sigpx = change(sigpx,<span class="string">'=='</span>,-99,nan); sigpy = change(sigpy,<span class="string">'=='</span>,-99,nan);
+0182     sigpx = reshape(sigpx,nz,ny,nx); sigpy = reshape(sigpy,nz,ny,nx);
+0183     inds = find(finite(sigpx+sigpy)); n_sigp = length(inds)
+0184 <span class="comment">%    cmd = ['save data/', dataset_str, '/sigp', region_str, temp_str, ' sigpx sigpy'];</span>
+0185 <span class="comment">%    eval(cmd)</span>
+0186     save data/sigp_gradients sigpx sigpy
+0187 <span class="keyword">elseif</span> surface_comparison==4
+0188 <span class="comment">%    cmd = ['load data/', dataset_str, '/sigp', region_str, temp_str];</span>
+0189 <span class="comment">%    eval(cmd)</span>
+0190     load data/sigp_gradients
+0191 <span class="keyword">end</span>
+0192 
+0193 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0194 <span class="comment">%%</span>
+0195 <span class="comment">%%                            surface statistics computations</span>
+0196 <span class="comment">%%</span>
+0197 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0198 
+0199 
+0200 s = change(s,<span class="string">'=='</span>,-99,nan); t = change(t,<span class="string">'=='</span>,-99,nan);
+0201 p = change(p,<span class="string">'=='</span>,-99,nan); g = change(g,<span class="string">'=='</span>,-99,nan);
+0202 ocean = change(ocean,<span class="string">'=='</span>,-99,nan); n = change(n,<span class="string">'=='</span>,-99,nan);
+0203 
+0204 
+0205 <span class="comment">%j_inds = find(lats&gt;64); s(:,j_inds,:) = nan;   %%      nan out s for lats &gt; 60</span>
+0206 
+0207 
+0208 <span class="keyword">if</span> sigp_surfaces==1
+0209     nsx = sigpx; nsy = sigpy;
+0210 <span class="keyword">end</span>
+0211 
+0212     
+0213 <span class="comment">%   percent of ocean labelled</span>
+0214 
+0215 inds_s_good = find(finite(s));
+0216 inds_g_good = find(finite(g));
+0217 percent_ocean_labelled = 100*length(inds_g_good)/length(inds_s_good);
+0218 
+0219 
+0220 
+0221 indsss = find(finite(g+s+nsx+ntpx+nsy+ntpy)); nn = length(indsss);
+0222 
+0223 epsilon_x = nsx-ntpx; epsilon_y = nsy-ntpy; 
+0224 
+0225 <span class="keyword">if</span> nn&gt;0
+0226   
+0227   figure(1)
+0228     
+0229   subplot(2,2,1)
+0230   
+0231     xx1 = nsx(indsss); yy1 = ntpx(indsss); xx2 = nsy(indsss); yy2 = ntpy(indsss);
+0232     
+0233     norm = (xx1-yy1).*(xx1-yy1)+(xx2-yy2).*(xx2-yy2);
+0234     
+0235     sx_diff = ntpx(indsss)-nsx(indsss); sy_diff = ntpy(indsss)-nsy(indsss);
+0236 
+0237     D = 1000*norm; logD0 = log10(D);
+0238    
+0239     logD = nan*ones(nz,ny,nx);
+0240 
+0241     logD(indsss) = logD0; 
+0242 
+0243     [D_bins,x_bins] = hist(logD0,[-15:0.1:0]);
+0244     
+0245     nD = sum(D_bins); D_integral = dj_quad(x_bins,D_bins); D_bins = D_bins/D_integral;
+0246 
+0247     percent = 100*dj_quadi(x_bins,D_bins,-5,0);
+0248 
+0249     ave = dj_quad(x_bins,x_bins.*D_bins); N_stats = [ave,percent];
+0250  
+0251   logD_srtd = sort(logD0); nD = length(logD_srtd);            <span class="comment">%   95th percentile</span>
+0252     
+0253   p50 = interp1((1:nD)/nD, logD_srtd, 0.50);
+0254   
+0255   p95 = interp1((1:nD)/nD, logD_srtd, 0.95);
+0256     
+0257   stats = [p50, p95, percent_ocean_labelled]
+0258   
+0259   
+0260     plot(x_bins,D_bins), grid on
+0261 
+0262     title(<span class="string">'log(\it{D_V})'</span>); ylabel(<span class="string">'frequency'</span>);
+0263     
+0264     Dmax = 1.01*max(D_bins); 
+0265     
+0266 <span class="comment">%     D_cum = [0,sum(D_bins)]; p95 = interp1(x_bins,D_cum);</span>
+0267     
+0268     set(gcf,<span class="string">'Name'</span>,<span class="string">'Veronis errors'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'off'</span>,<span class="string">'Color'</span>,[0.961 0.988 0.965])
+0269     
+0270     set(gca,<span class="string">'ylim'</span>,[0,Dmax])
+0271 
+0272     <span class="keyword">if</span> by_volume==1
+0273         indss5 = find(logD&gt;=-5); percent1 = 100*length(indss5)/length(indsss);
+0274         i3 = zeros(size(dp)); i3_5 = i3; 
+0275         i3(indsss) = 1; i3_5(indss5) = 1;
+0276         zz = i3.*cos_mat.*dp; zz5 = i3_5.*cos_mat.*dp;
+0277         percent2 = 100*nansum(zz5(:))/nansum(zz(:));  N_stats(3) = percent2;     
+0278     <span class="keyword">end</span>
+0279     
+0280     <span class="keyword">if</span> figure_no==1 | figure_no==2
+0281         xlo = -15; xhi = 0; xrange = xhi-xlo; xx = xlo+0.02*xrange;
+0282         ylo = 0; yhi = 0.375; yrange = yhi-ylo; yy = yhi-0.06*yrange;
+0283         set(gca,<span class="string">'ylim'</span>,[ylo yhi])
+0284         text(xx,yy,<span class="string">'(a)'</span>)
+0285     <span class="keyword">elseif</span> figure_no==3 | figure_no==4
+0286         xlo = -15; xhi = 0; xrange = xhi-xlo; xx = xlo+0.02*xrange;
+0287         ylo = 0; yhi = 0.4; yrange = yhi-ylo; yy = yhi-0.06*yrange;
+0288         set(gca,<span class="string">'ylim'</span>,[ylo yhi])
+0289         text(xx,yy,<span class="string">'(a)'</span>)
+0290     <span class="keyword">elseif</span> figure_no==7 | figure_no==8
+0291         xlo = -15; xhi = 0; xrange = xhi-xlo; xx = xlo+0.02*xrange;
+0292         ylo = 0; yhi = 0.35; yrange = yhi-ylo; yy = yhi-0.06*yrange;
+0293         set(gca,<span class="string">'ylim'</span>,[ylo yhi])
+0294         text(xx,yy,<span class="string">'(a)'</span>)
+0295     <span class="keyword">elseif</span> figure_no==10
+0296         xlo = -15; xhi = 0; xrange = xhi-xlo; xx = xlo+0.02*xrange;
+0297         ylo = 0; yhi = 0.55; yrange = yhi-ylo; yy = yhi-0.06*yrange;
+0298         set(gca,<span class="string">'ylim'</span>,[ylo yhi])
+0299         text(xx,yy,<span class="string">'(a)'</span>)
+0300     <span class="keyword">elseif</span> figure_no==14 | figure_no==15
+0301         xlo = -15; xhi = 0; xrange = xhi-xlo; xx = xlo+0.02*xrange;
+0302         ylo = 0; yhi = 0.4; yrange = yhi-ylo; yy = yhi-0.06*yrange;
+0303         set(gca,<span class="string">'ylim'</span>,[ylo yhi])
+0304         text(xx,yy,<span class="string">'(a)'</span>)
+0305     <span class="keyword">end</span>
+0306 
+0307 
+0308 <span class="comment">%       gamma frequency distribution or gamma residual plot</span>
+0309 <span class="comment">%</span>
+0310 <span class="comment">%       and gamma frequency distribution stats</span>
+0311  
+0312 
+0313   subplot(2,2,2)
+0314   
+0315     inds_g = find(finite(g)); gg = g(inds_g); 
+0316     
+0317     <span class="keyword">if</span> mean(gg)&gt;1000, gg = gg-1000; <span class="keyword">end</span>
+0318     
+0319     [g_bins,x_bins] = hist(gg,100); g_bins = g_bins/sum(g_bins(:));
+0320     
+0321     <span class="keyword">if</span> sum(size(gn))==0        
+0322         whos, plot(x_bins,g_bins), grid on    
+0323         xmin = 0.99*min(gg); xmax = 1.01*max(gg); gmax = 1.01*max(g_bins); 
+0324         set(gca,<span class="string">'xlim'</span>,[xmin,xmax],<span class="string">'ylim'</span>,[0,gmax])
+0325     <span class="keyword">else</span>
+0326         gnn = gn(inds_g); plot(gg,gg-gnn,<span class="string">'.'</span>), grid on
+0327         <span class="keyword">if</span> sum(size(limit_panel2))~=0, set(gca,<span class="string">'xlim'</span>,[27,29],<span class="string">'ylim'</span>,[-0.2,0.2]), <span class="keyword">end</span>
+0328     <span class="keyword">end</span>
+0329     
+0330     gmean = mean(gg); gstd = std(gg); <span class="keyword">if</span> gmean&gt;1000, gmean = gmean-1000; <span class="keyword">end</span>
+0331     title([<span class="string">'\gamma     '</span>, num2str(gmean,4),<span class="string">'     '</span>,  num2str(gstd,3)]);
+0332     
+0333     <span class="comment">%ylabel('frequency'); %title(zz)</span>
+0334     
+0335     <span class="keyword">if</span> figure_no==1 | figure_no==2
+0336         xlo = 20; xhi = 30; xrange = xhi-xlo; xx = xlo+0.02*xrange;
+0337         ylo = 0; yhi = 0.25; yrange = yhi-ylo; yy = yhi-0.06*yrange;
+0338         set(gca,<span class="string">'xlim'</span>,[xlo xhi],<span class="string">'ylim'</span>,[ylo yhi])
+0339         text(xx,yy,<span class="string">'(b)'</span>)
+0340     <span class="keyword">elseif</span> figure_no==3 | figure_no==4
+0341         xlo = 24; xhi = 30; xrange = xhi-xlo; xx = xlo+0.02*xrange;
+0342         ylo = 0; yhi = 0.10; yrange = yhi-ylo; yy = yhi-0.06*yrange;
+0343         set(gca,<span class="string">'xlim'</span>,[xlo xhi],<span class="string">'ylim'</span>,[ylo yhi])
+0344         text(xx,yy,<span class="string">'(b)'</span>)
+0345     <span class="keyword">elseif</span> figure_no==7 | figure_no==8
+0346         xlo = 20; xhi = 30; xrange = xhi-xlo; xx = xlo+0.02*xrange;
+0347         ylo = 0; yhi = 0.14; yrange = yhi-ylo; yy = yhi-0.06*yrange;
+0348         set(gca,<span class="string">'xlim'</span>,[xlo xhi],<span class="string">'ylim'</span>,[ylo yhi])
+0349         text(xx,yy,<span class="string">'(b)'</span>)
+0350     <span class="keyword">elseif</span> figure_no==10
+0351         xlo = 22.5; xhi = 29; xrange = xhi-xlo; xx = xlo+0.02*xrange;
+0352         ylo = 0; yhi = 0.075; yrange = yhi-ylo; yy = yhi-0.06*yrange;
+0353         set(gca,<span class="string">'xlim'</span>,[xlo xhi],<span class="string">'ylim'</span>,[ylo yhi])
+0354         text(xx,yy,<span class="string">'(b)'</span>)    
+0355     <span class="keyword">elseif</span> figure_no==14 | figure_no==15
+0356         xlo = 21; xhi = 29; xrange = xhi-xlo; xx = xlo+0.02*xrange;
+0357         ylo = 0; yhi = 0.13; yrange = yhi-ylo; yy = yhi-0.06*yrange;
+0358         set(gca,<span class="string">'xlim'</span>,[xlo xhi],<span class="string">'ylim'</span>,[ylo yhi])
+0359         text(xx,yy,<span class="string">'(b)'</span>)
+0360     <span class="keyword">end</span>
+0361 
+0362 
+0363 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0364 
+0365 <span class="comment">%%      logD map</span>
+0366 
+0367     logD2 = reshape(nanmax(logD),ny,nx);
+0368     minz = nanmin(logD2(:)); [maxz0,indsm0] = nanmax(logD2(:));
+0369     minz = max(round(minz),-9); maxz = round(maxz0);
+0370     logD2 = change(logD2,<span class="string">'&lt;='</span>,minz,minz);
+0371     logD2 = change(logD2,<span class="string">'&gt;='</span>,maxz,maxz);
+0372     <span class="keyword">if</span> maxz&gt;maxz0, logD2(indsm0(1)) = maxz; <span class="keyword">end</span>
+0373     cmd = [<span class="string">'colormap jet('</span>,  int2str(max(1,2*(maxz-minz))), <span class="string">')'</span>]; eval(cmd)
+0374 
+0375   subplot(2,2,3)
+0376   
+0377     dj_pltmp(nanmean(longs),nanmean(lats'),logD2), grid on
+0378     
+0379     title([num2str(ave,3), <span class="string">'    '</span>, num2str(p50,3), <span class="string">'    '</span>, num2str(p95,3)])
+0380 
+0381     <span class="keyword">if</span> figure_no==1 | figure_no==2 
+0382         text(-3,20,<span class="string">'(c)'</span>)
+0383     <span class="keyword">elseif</span> figure_no==3 | figure_no==4 
+0384         text(-3,-75,<span class="string">'(c)'</span>)
+0385     <span class="keyword">elseif</span> figure_no==7 | figure_no==8 
+0386         text(-3,20,<span class="string">'(c)'</span>)
+0387     <span class="keyword">elseif</span> figure_no==10
+0388         xlo = 329.9; xhi = 330.1; xrange = xhi-xlo; xx = xlo+0.02*xrange;
+0389         ylo = -70; yhi = 68; yrange = yhi-ylo; yy = yhi-0.08*yrange;
+0390         text(xx,yy,<span class="string">'(c)'</span>)
+0391     <span class="keyword">elseif</span> figure_no==14 | figure_no==15
+0392         text(-3,20,<span class="string">'(c)'</span>)
+0393     <span class="keyword">end</span>
+0394 
+0395 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0396     
+0397   subplot(2,2,4)
+0398     p = reshape(p,size(s)); <span class="comment">%pstats = [nanmin(p(:)),nanmax(p(:))]</span>
+0399     pmean = nanmean(p(:,:)');
+0400     k0 = find(pmean&gt;200);
+0401     k1 = change(s,<span class="string">'&gt;='</span>,0,1); k1mean = nansum(k1(k0,:)'); 
+0402 <span class="comment">%    [pmean',[diff(pmean');nan]]</span>
+0403     [nhist,xout] = hist(p(indss5),pmean'); <span class="comment">%size(nhist(k0)), size(k1mean),</span>
+0404     k1mean = reshape(k1mean,size(nhist(k0)));
+0405     nhist(k0) = 100*nhist(k0)./k1mean;
+0406 <span class="comment">%    barh(xout,nhist)</span>
+0407     barh(xout,nhist,<span class="string">'hist'</span>)
+0408 <span class="comment">%    plot(nhist,xout)</span>
+0409     
+0410 <span class="comment">%    h = findobj(gca,'Type','patch');</span>
+0411 <span class="comment">%    set(h,'EdgeColor','w')</span>
+0412     set(gca,<span class="string">'ylim'</span>,[xout(1),xout(length(xout))],<span class="string">'ydir'</span>,<span class="string">'reverse'</span>)
+0413     
+0414     perc5 = N_stats(length(N_stats))
+0415     
+0416     <span class="keyword">if</span> perc5&gt;=10
+0417         title([num2str(perc5,4),<span class="string">'%'</span>]) <span class="comment">%, '    ', num2str(p95,3)])</span>
+0418     <span class="keyword">else</span>
+0419         title([num2str(perc5,3),<span class="string">'%'</span>]) <span class="comment">%, '    ', num2str(p95,3)])</span>
+0420     <span class="keyword">end</span>
+0421     
+0422     grid on
+0423     
+0424     <span class="keyword">if</span> figure_no==1 
+0425         xlo = 0; xhi = 2.3; xrange = xhi-xlo; xx = xlo+0.9*xrange;
+0426         set(gca,<span class="string">'xlim'</span>,[xlo xhi])
+0427         text(xx,700,<span class="string">'(d)'</span>)
+0428     <span class="keyword">elseif</span> figure_no==2
+0429         xlo = 0; xhi = 6.7; xrange = xhi-xlo; xx = xlo+0.9*xrange;
+0430         set(gca,<span class="string">'xlim'</span>,[xlo xhi])
+0431         text(xx,350,<span class="string">'(d)'</span>)
+0432     <span class="keyword">elseif</span> figure_no==3
+0433         xlo = 0; xhi = 8; xrange = xhi-xlo; xx = xlo+0.9*xrange;
+0434         set(gca,<span class="string">'xlim'</span>,[xlo xhi])
+0435         text(xx,350,<span class="string">'(d)'</span>)
+0436     <span class="keyword">elseif</span> figure_no==4
+0437         xlo = 0; xhi = 55; xrange = xhi-xlo; xx = xlo+0.9*xrange;
+0438         set(gca,<span class="string">'xlim'</span>,[xlo xhi])
+0439         text(xx,350,<span class="string">'(d)'</span>)
+0440     <span class="keyword">elseif</span> figure_no==7
+0441         xlo = 0; xhi = 0.3; xrange = xhi-xlo; xx = xlo+0.9*xrange;
+0442         set(gca,<span class="string">'xlim'</span>,[xlo xhi])
+0443         text(xx,350,<span class="string">'(d)'</span>)
+0444     <span class="keyword">elseif</span> figure_no==8
+0445         xlo = 0; xhi = 30; xrange = xhi-xlo; xx = xlo+0.9*xrange;
+0446         set(gca,<span class="string">'xlim'</span>,[xlo xhi])
+0447         text(xx,350,<span class="string">'(d)'</span>)
+0448     <span class="keyword">elseif</span> figure_no==10
+0449         xlo = 0; xhi = 1.2; xrange = xhi-xlo; xx = xlo+0.9*xrange;
+0450         set(gca,<span class="string">'xlim'</span>,[xlo xhi])
+0451         text(xx,350,<span class="string">'(d)'</span>)
+0452     <span class="keyword">elseif</span> figure_no==14
+0453         xlo = 0; xhi = 1.2; xrange = xhi-xlo; xx = xlo+0.9*xrange;
+0454         set(gca,<span class="string">'xlim'</span>,[xlo xhi])
+0455         text(xx,600,<span class="string">'(d)'</span>)
+0456     <span class="keyword">elseif</span> figure_no==15
+0457         xlo = 0; xhi = 2; xrange = xhi-xlo; xx = xlo+0.9*xrange;
+0458         set(gca,<span class="string">'xlim'</span>,[xlo xhi])
+0459         text(xx,600,<span class="string">'(d)'</span>)
+0460     <span class="keyword">end</span>
+0461 
+0462 <span class="keyword">else</span>
+0463     
+0464     whos
+0465     
+0466     inds = find(finite(g)); ng = length(inds)
+0467     inds = find(finite(s)); ns = length(inds)
+0468     inds = find(finite(ntpx)); nntpx = length(inds)
+0469     inds = find(finite(nsx)); nnsx = length(inds)
+0470     inds = find(finite(ntpy)); nntpy = length(inds)
+0471     inds = find(finite(nsy)); nnsy = length(inds)
+0472 
+0473     error(<span class="string">'*****        no data'</span>)
+0474     
+0475 <span class="keyword">end</span>
+0476 
+0477 dj_toc
+0478 
+0479 <span class="comment">% inds_poss = find(s&gt;=0&amp;p&gt;=200); percent_checked = 100*length(indsss)/length(inds_poss)</span>
+0480 <span class="comment">%</span>
+0481  dj_pause(1)
+0482     
+0483 
+0484 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Thu 17-Apr-2008 14:32:37 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

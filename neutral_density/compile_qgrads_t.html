@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of compile_qgrads_t</title>
+  <meta name="keywords" content="compile_qgrads_t">
+  <meta name="description" content="gamma_library =  'd:/mySoftware/gamma_n/fortran/double_precision/gamma_dp.lib';">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; compile_qgrads_t.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>compile_qgrads_t
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>gamma_library =  'd:/mySoftware/gamma_n/fortran/double_precision/gamma_dp.lib';</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">gamma_library =  'd:/mySoftware/gamma_n/fortran/double_precision/gamma_dp.lib';</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="get_gradients.html" class="code" title="function [ave,percent2,epsilon_x,epsilon_y] = get_gradients(handles)">get_gradients</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 
+0002 <span class="comment">%gamma_library =  'd:/mySoftware/gamma_n/fortran/double_precision/gamma_dp.lib';</span>
+0003 
+0004 z = matlabroot; 
+0005 cmd = [<span class="string">'gamma_library =  '''</span>, z(1),<span class="string">':/mySoftware/gamma_n/fortran/double_precision/gamma_dp.lib'';'</span>];
+0006 eval(cmd) 
+0007 
+0008 cmd = [<span class="string">'eos_library =  '''</span>, z(1),<span class="string">':/eos/eos05/code/fortran/Debug/eoslib.lib'';'</span>];
+0009 eval(cmd)
+0010 
+0011 <span class="comment">%eos_library = 'd:/eos/eos05/code/fortran/Debug/eoslib.lib';</span>
+0012 
+0013 <span class="comment">%gfunc_library = './gpoly/gpoly.lib';</span>
+0014 
+0015 sigp_library = <span class="string">'./sigp/sigma_p.lib'</span>;
+0016 
+0017 cmd = [<span class="string">'mex quick_gradients.f90 ns_gradients.f90 sigl_gradients.f90 '</span>, <span class="keyword">...</span>
+0018                  eos_library, <span class="string">' '</span>, gamma_library, <span class="string">' '</span>, sigp_library];
+0019 
+0020 eval(cmd)
+0021 
+0022 <span class="comment">%dj_disp('      compile_qgrads_t compiled successfully ...')</span>
+0023 
+0024 <span class="comment">%dj_toc</span></pre></div>
+<hr><address>Generated on Thu 17-Apr-2008 14:32:37 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

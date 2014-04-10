@@ -1,0 +1,10 @@
+disp(' '); disp('my startup file ...'); disp(' ')
+
+
+path(path,'d:/matlab/csirolib')
+path(path,'d:/matlab/seawater')
+path(path,'d:/matlab/dj_lib')
+
+
+%rect = [221 152 560 378]; set(0, 'DefaultFigurePosition',rect);clear rect
+

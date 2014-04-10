@@ -11,7 +11,7 @@ cd ..
 
 [nz,ny,nx] = size(s);
 
-inds_g = find(isfinite(g)); ng = length(inds_g)
+inds_g = find(finite(g)); ng = length(inds_g)
 
 %  inds_e = find(finite(r_east)); neast = length(inds_e); perc_east = 100*neast/ng
 %  inds_n = find(finite(r_north)); nnth = length(inds_n); perc_nth = 100*nnth/ng
@@ -30,7 +30,7 @@ for kg = 1:ng
     
     ie = i+1; iw = i-1;
         
-    if isfinite(s(k,j,ie)) && isfinite(s(k,j,iw))
+    if finite(s(k,j,ie)) && finite(s(k,j,iw))
       nr(kg) = 1; nzz = nzz+1;
     end
     
@@ -45,7 +45,7 @@ for kg = 1:ng
 
     
     if nr(kg)==1
-        indss = find(isfinite(s(:,j,i)));
+        indss = find(finite(s(:,j,i)));
         ss = s(indss,j,i); ctt = t(indss,j,i); pp = p(indss,j,i);
 %         k_vert(kg) = k;
          if k==1

@@ -2,7 +2,8 @@ clear all, close all, clc, dj_tic
 
 global resolution symbol
 
-symbol = 'g'; resolution = 4;
+symbol = 'g'; 
+resolution = 4;
 
 load ../data/global_ocean
 

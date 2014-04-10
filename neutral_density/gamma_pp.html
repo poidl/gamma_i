@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of gamma_pp</title>
+  <meta name="keywords" content="gamma_pp">
+  <meta name="description" content="%      label with gamma_pp">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; gamma_pp.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>gamma_pp
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>%      label with gamma_pp</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">%      label with gamma_pp</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="neutral_density.html" class="code" title="function varargout = neutral_density(varargin)">neutral_density</a>	NEUTRAL_DENSITY M-file for neutral_density.fig</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="neutral_density.html" class="code" title="function varargout = neutral_density(varargin)">neutral_density</a>	NEUTRAL_DENSITY M-file for neutral_density.fig</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 
+0002 <span class="comment">%%      label with gamma_pp</span>
+0003 
+0004 indss = find(finite(s));
+0005 
+0006 <span class="keyword">if</span> h_normalise==1
+0007     ss = s(indss)/40; ctt = ct(indss)/30; pp = p(indss); 
+0008 <span class="keyword">else</span>
+0009     ss = s(indss); ctt = ct(indss); pp = p(indss); 
+0010 <span class="keyword">end</span>
+0011     
+0012 h_normalise
+0013 
+0014 cd d:/neutrals/ness8/an_equation
+0015     cmd = [<span class="string">'copyfile(''rfunc_'</span>, num2str(h_numerator), <span class="string">'_'</span>, num2str(h_denominator), <span class="string">'.dat'', ''rfunc.dat'')'</span>]
+0016     eval(cmd)
+0017     load rfunc.dat
+0018     rfunc
+0019     cmd = [<span class="string">'g_pr = rfunc_'</span>, num2str(h_numerator), <span class="string">'_'</span>, num2str(h_denominator), <span class="string">'(ss,ctt,rfunc);'</span>]
+0020     eval(cmd)
+0021 cd ../<a href="neutral_density.html" class="code" title="function varargout = neutral_density(varargin)">neutral_density</a>
+0022         
+0023 g(indss) = g_pr;
+0024 
+0025 <span class="keyword">if</span> h_normalise==1, g = 30*g; <span class="keyword">end</span>
+0026 
+0027 <span class="keyword">if</span> mean(g_pr)&gt;1000, g = g-1000; <span class="keyword">end</span>
+0028 
+0029 
+0030 <span class="comment">%%      and plot</span>
+0031 
+0032 smin = nanmin(s(:)); smax = nanmax(s(:)); sby = (smax-smin)/100;
+0033 
+0034 ctmin = nanmin(ct(:)); ctmax = nanmax(ct(:)); ctby = (ctmax-ctmin)/100;
+0035 
+0036 s0 = smin:sby:smax; ct0 = ctmin:ctby:ctmax; ns = length(s0); nct = length(ct0);
+0037 
+0038 [ss,ctt] = meshgrid(s0,ct0); ss = ss(:); ctt = ctt(:);
+0039 
+0040 <span class="keyword">if</span> h_normalise==1
+0041     ss = ss/40; ctt = ctt/30;
+0042 <span class="keyword">end</span>
+0043 
+0044 cd ../an_equation
+0045 cmd = [<span class="string">'g0 = rfunc_'</span>, h_numerator, <span class="string">'_'</span>, h_denominator, <span class="string">'(ss,ctt,rfunc);'</span>];, eval(cmd)
+0046 cd ../<a href="neutral_density.html" class="code" title="function varargout = neutral_density(varargin)">neutral_density</a>
+0047 
+0048 g0 = reshape(g0,nct,ns);
+0049 
+0050 <span class="keyword">if</span> h_normalise==1
+0051     g0 = 30*g0;
+0052 <span class="keyword">end</span>
+0053 
+0054 figure(5)
+0055     fpcolor(s0,ct0,g0), colorbar
+0056     inds = find(finite(s(:))); ss = s(inds); ctt = ct(inds);
+0057     hold on, plot(ss,ctt,<span class="string">'w.'</span>)
+0058     contour(s0,ct0,g0,20,<span class="string">'k'</span>), hold off
+0059 
+0060 dj_pause(1)
+0061 
+0062 
+0063</pre></div>
+<hr><address>Generated on Thu 17-Apr-2008 14:32:37 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

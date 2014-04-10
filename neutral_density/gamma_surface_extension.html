@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of gamma_surface_extension</title>
+  <meta name="keywords" content="gamma_surface_extension">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; gamma_surface_extension.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>gamma_surface_extension
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="add_sctp_data.html" class="code" title="function [s,ct] = add_sctp_data(s0,ct0,p0,deltas)">add_sctp_data</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="neutral_density.html" class="code" title="function varargout = neutral_density(varargin)">neutral_density</a>	NEUTRAL_DENSITY M-file for neutral_density.fig</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="keyword">global</span> sns ctns tns pns
+0002 
+0003 clc, dj_tic
+0004 
+0005 dj_disp(<span class="string">'extending density surfaces ...'</span>), dj_disp(<span class="string">''</span>)
+0006 
+0007 <span class="keyword">global</span> h_glevels
+0008 
+0009 glevels = eval(h_glevels); ng = length(glevels);
+0010 
+0011 ss_gbdry = []; ctt_gbdry = []; gg_gbdry = []; figure(1)
+0012 
+0013 <span class="keyword">for</span> level = 1:ng
+0014 
+0015     [snss,inds_srtd] = sort(sns(level,:));
+0016   
+0017     indss = find(finite(snss(:))); nn = length(indss);
+0018     
+0019     <span class="keyword">if</span> nn&gt;0
+0020 
+0021       snss = snss(indss);
+0022       ctnss = ctns(level,inds_srtd); ctnss = ctnss(indss);
+0023       pnss = pns(level,inds_srtd); pnss = pnss(indss);
+0024 
+0025       <span class="keyword">for</span> kk = 1:1
+0026         
+0027         deltas = -0.01;
+0028         [sss,cttt] = <a href="add_sctp_data.html" class="code" title="function [s,ct] = add_sctp_data(s0,ct0,p0,deltas)">add_sctp_data</a>(snss(kk),ctnss(kk),pnss(kk),deltas);
+0029         ggg = glevels(level)*ones(size(sss));
+0030         
+0031         ss_gbdry = [ss_gbdry; sss];
+0032         ctt_gbdry = [ctt_gbdry; cttt];
+0033         gg_gbdry = [gg_gbdry; ggg];
+0034         
+0035         hold on; plot(sss,cttt,<span class="string">'m.'</span>), hold off
+0036         dj_pause(1)
+0037 
+0038         
+0039         deltas = 0.05;
+0040         [sss,cttt] = <a href="add_sctp_data.html" class="code" title="function [s,ct] = add_sctp_data(s0,ct0,p0,deltas)">add_sctp_data</a>(snss(nn-kk+1),ctnss(nn-kk+1),pnss(nn-kk+1),deltas);
+0041         ggg = glevels(level)*ones(size(sss));
+0042         
+0043         ss_gbdry = [ss_gbdry; sss];
+0044         ctt_gbdry = [ctt_gbdry; cttt];
+0045         gg_gbdry = [gg_gbdry; ggg];
+0046         
+0047         hold on; plot(sss,cttt,<span class="string">'m.'</span>), hold off    
+0048         dj_pause(1)
+0049         
+0050       <span class="keyword">end</span>
+0051     
+0052     <span class="keyword">end</span>
+0053   
+0054 <span class="keyword">end</span>
+0055 
+0056 save ../an_equation/gamma_bdry ss_gbdry ctt_gbdry gg_gbdry
+0057 
+0058 dj_toc</pre></div>
+<hr><address>Generated on Thu 17-Apr-2008 14:32:37 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

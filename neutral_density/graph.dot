@@ -1,0 +1,31 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  gamma_p -> neutral_density;
+  gamma_pp -> neutral_density;
+  gamma_rf -> is_a_section;
+  gamma_surface_extension -> add_sctp_data;
+  get_gradients -> compile_qgrads_t;
+  neutral_density -> compile_gl_t;
+  neutral_density -> gamma_p;
+  neutral_density -> gamma_pp;
+  neutral_density -> gamma_rf;
+  neutral_density -> gamma_surface_extension;
+  neutral_density -> get_gradients;
+  neutral_density -> is_a_section;
+  neutral_density -> neutral_density;
+  neutral_density -> p_on_g_surfaces;
+  neutral_density -> view_sns_ctns;
+
+  add_sctp_data [URL="add_sctp_data.html"];
+  compile_gl_t [URL="compile_gl_t.html"];
+  compile_qgrads_t [URL="compile_qgrads_t.html"];
+  gamma_p [URL="gamma_p.html"];
+  gamma_pp [URL="gamma_pp.html"];
+  gamma_rf [URL="gamma_rf.html"];
+  gamma_surface_extension [URL="gamma_surface_extension.html"];
+  get_gradients [URL="get_gradients.html"];
+  is_a_section [URL="is_a_section.html"];
+  neutral_density [URL="neutral_density.html"];
+  p_on_g_surfaces [URL="p_on_g_surfaces.html"];
+  view_sns_ctns [URL="view_sns_ctns.html"];
+}

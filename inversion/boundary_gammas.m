@@ -1,34 +1,35 @@
+function [Ibg,g_bdry] = boundary_gammas(g,long,lat)
 
 [nz,ny,nx] = size(g); 
     
-longs3 = reshape(ones(nz,1)*longs(:)',nz,ny,nx);
+long3 = reshape(ones(nz,1)*long(:)',nz,ny,nx);
+lat3 = reshape(ones(nz,1)*lat(:)',nz,ny,nx);
 
-lats3 = reshape(ones(nz,1)*lats(:)',nz,ny,nx);
+% Ig = find(isfinite(g));
+% ng = length(Ig);
+Ibg = find(isfinite(g) & 170<=long3 & long3<=270 & -10<=lat3 & lat3<=10);
+% n_bg = length(Ibg);
+g_bdry = g(Ibg);
 
-inds_g = find(isfinite(g)); ng = length(inds_g);
+% if n_bg<=20
+%     Ibg_w = [1:n_bg];
+% else
+%     Ibg_w = [1:floor(n_bg/10):n_bg];
+% end
 
-inds_bg = find(isfinite(g)&170<=longs3&longs3<=240&-10<=lats3&lats3<=10); n_bg = length(inds_bg);
+%some_boundary_gammas = [Ibg(Ibg_w),g_bdry(Ibg_w)];
 
-g_bdry = g(inds_bg);
+%boundary_percent_of_data = 100*n_bg/ng;
 
-if n_bg<=20
-    inds_bg_w = 1:n_bg;
-else
-    inds_bg_w = 1:floor(n_bg/10):n_bg;
+% figure
+% longss = nanmean(long);
+% latss = nanmean(lat');
+% dj_pltmp(longss,latss,n)
+% hold on
+% plot(longs3(Ibg(:)),lats3(Ibg(:)),'m*')
+% hold off
+%clear longs3 lats3
+
+%dj_pause(1)
+
 end
-
-some_boundary_gammas = [inds_bg(inds_bg_w),g_bdry(inds_bg_w)]
-
-boundary_percent_of_data = 100*n_bg/ng
-
-figure
-
-longss = nanmean(longs); latss = nanmean(lats');
-
-dj_pltmp(longss,latss,n), hold on
-
-plot(longs3(inds_bg(:)),lats3(inds_bg(:)),'m*'), hold off
-
-clear longs3 lats3
-
-dj_pause(1)

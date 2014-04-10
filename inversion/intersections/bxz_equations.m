@@ -2,7 +2,7 @@ function [gc1,gc2,gc3,gc4,gc5,nxz_beqs] = bxz_equations(s,ct,p,g,ocean,n,longs,l
 
 [nz,ny,nx] = size(s);
 
-inds_g = find(isfinite(g)); ng = length(inds_g)
+inds_g = find(finite(g)); ng = length(inds_g)
 
 nr = zeros(ng,1); gc1 = nan*ones(ng,1); gc2 = gc1; gc3 = gc1; gc4 = gc1; gc5 = gc1;
 
@@ -16,8 +16,8 @@ for kg = 1:ng
     
     ie = i+1; iw = i-1;
         
-    if isfinite(s(k,j,ie)) && isfinite(s(k,j,iw))
-        indss = find(isfinite(s(:,j,i)));
+    if finite(s(k,j,ie)) && finite(s(k,j,iw))
+        indss = find(finite(s(:,j,i)));
         ss = s(indss,j,i); ctt = ct(indss,j,i); pp = p(indss,j,i);
         if k==1
 

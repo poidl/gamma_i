@@ -1,0 +1,73 @@
+global sns ctns pns
+
+[ng,ny,nx] = size(sns); indsp = find(finite(pns));
+
+% pns_srtd = sort(pns(indsp)); nn = length(pns_srtd);
+% 
+% n20 = round(0.2*nn); n40 = round(0.4*nn); n60 = round(0.6*nn); n80 = round(0.8*nn);
+
+nloop = 0; np = 5; ncmap = 64;
+
+cmap = flipud(colormap(jet(ncmap)));
+
+h1 = figure;
+
+% 
+% [pns_srtd(n20), pns_srtd(n40), pns_srtd(n60), pns_srtd(n80)]
+
+for k = 1:np
+    
+  if k==1
+      inds = find(pns(:)<=250);
+  elseif k==2
+      inds = find(250<pns(:)&pns(:)<=1500);
+  elseif k==3
+      inds = find(1500<pns(:)&pns(:)<=2500);
+  elseif k==4
+      inds = find(2500<pns(:)&pns(:)<=3500);
+  else
+      inds = find(3500<pns(:));
+  end
+      
+      nloop = nloop+1; [nloop,length(inds)]
+      
+      ss = sns(inds); ctt = ctns(inds); pp = pns(inds);
+
+
+%      cttt = ct_from_t(sss,ttt,ppp); 
+
+      ind_map = 1+round(((k-1)/(np-1))*(ncmap-1));
+   
+      figure(h1)
+        plot(ss,ctt,'.','color',cmap(ind_map,:))
+        if nloop==1, grid on, hold on,  end
+    
+      figure(h1+1)
+        plot(ctt,pp,'.','color',cmap(ind_map,:))
+        if nloop==1, grid on, hold on,  end
+        set(gca,'ydir','reverse')
+            
+%       figure(3)
+%         plot(ss,pp,'.','color',cmap(ind_map,:))
+%         if nloop==1, grid on, hold on,  end
+%         set(gca,'ydir','reverse')  
+        
+      pause(1)
+
+end
+
+
+%           add freezing line
+
+figure(1)
+
+axs = axis;
+
+s0 = axs(1):0.1:axs(2);
+p0 = zeros(size(s0));
+ct0 = fp_ct(s0,p0);
+plot(s0,ct0,'k'), hold off
+
+
+return
+

@@ -139,9 +139,9 @@ global s ct t p g longs lats
 
 longss = nanmean(longs(:,:)); latss = nanmean(lats(:,:)');
 
-%figure,dj_pltmp(longss,latss,squeeze(g(21,:,:))), dj_pause(1)
+dj_pltmp(longss,latss,squeeze(g(21,:,:))), dj_pause(0)
 
-dj_disp('labeling missing gamma_n values with gamma_rf ...')
+dj_disp('labeling with gamma_n ...')
 
 method = 2; % compile_gl_t
 
@@ -194,7 +194,6 @@ g(inds) = gfunc(s(inds),ctt);
 
 cd ..
 
-figure,dj_pltmp(longss,latss,squeeze(g(21,:,:))), dj_pause(1)
 
 
 if is_a_section(s,t) == 1
@@ -262,7 +261,8 @@ clc
 
 global h_glevels
 
-z = matlabroot; cmd = ['cd ', z(1), 'home/bar747/matlab/gamma_i/neutral_density']; eval(cmd) 
+default_dir = which('create_data.m');
+cd ([default_dir(1:end-14)])
 
 handles.ntp = 0;
 handles.ns = 1;
@@ -322,7 +322,7 @@ global s t p g longs lats
 
 clc
 
-z = matlabroot; cmd = ['cd ', z(1), 'home/bar747/matlab/gamma_i/neutral_density']; eval(cmd) 
+z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/neutral_density']; eval(cmd) 
 
 output = tangent_plane_gui;
 
@@ -441,7 +441,7 @@ global called_ggrads
 
 clc
 
-z = matlabroot; cmd = ['cd ', z(1), 'home/bar747/matlab/gamma_i/neutral_density/']; eval(cmd) 
+z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/neutral_density']; eval(cmd) 
 
 %ok = 'tangent plane gradients ...'
 
@@ -509,7 +509,9 @@ handles.open_path = PathName
 % Update handles structure
 guidata(hObject, handles);
 
-z = matlabroot; cmd = ['cd ', z(1), 'home/bar747/matlab/gamma_i/neutral_density/']; eval(cmd) 
+%z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/neutral_density']; eval(cmd) 
+default_dir = which('create_data.m');
+cd ([default_dir(1:end-14)])
 
 if length(size(p))<3
     [nz,ny,nx] = size(s);
@@ -551,7 +553,7 @@ cmd = ['save ', path, file, ' s ct t p g ocean n longs lats '], eval(cmd)
 
 plast = handles.open_path;
 
-z = matlabroot; cmd = ['cd ', z(1), 'home/bar747/matlab/gamma_i/neutral_density']; eval(cmd) 
+z = matlabroot; cmd = ['cd ', z(1), ':/neutrals/ness8/neutral_density']; eval(cmd) 
 
 save handles_last plast 
 

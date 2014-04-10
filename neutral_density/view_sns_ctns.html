@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of view_sns_ctns</title>
+  <meta name="keywords" content="view_sns_ctns">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">.</a> &gt; view_sns_ctns.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for .&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>view_sns_ctns
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="neutral_density.html" class="code" title="function varargout = neutral_density(varargin)">neutral_density</a>	NEUTRAL_DENSITY M-file for neutral_density.fig</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="keyword">global</span> sns ctns pns longs lats g
+0002 
+0003 <span class="comment">%%      latitudinal spectrum</span>
+0004 
+0005 cmap = colormap(jet(64)); nloop = 0; longs1 = longs; lats1 = lats;
+0006 
+0007 inds = find(~finite(g(1,:))); longs1(inds) = nan; lats1(inds) = nan;
+0008 
+0009 longss = nanmean(longs); latss = nanmean(lats');
+0010 
+0011 [ng,ny,nx] = size(sns+ctns); figure, dj_tic
+0012 
+0013 <span class="keyword">for</span> j = 1:ny   
+0014 <span class="keyword">for</span> i = 1:nx
+0015 
+0016   ss = sns(:,j,i); ctt = ctns(:,j,i); 
+0017     
+0018   inds = find(finite(ss));    <span class="comment">% [k_inds,i_inds] = ind2sub(size(ss),inds);</span>
+0019 
+0020   <span class="keyword">if</span> length(inds)&gt;0
+0021        
+0022       nloop = nloop+1; 
+0023       
+0024       ind_map = 1+round(((longs(j,i)-longss(1))/(longss(nx)-longss(1)))*63);
+0025          
+0026       subplot(2,2,1), plot(ss,ctt,<span class="string">'.'</span>,<span class="string">'color'</span>,cmap(ind_map,:))
+0027 
+0028       <span class="keyword">if</span> nloop==1, grid on, hold on, <span class="keyword">end</span>
+0029       
+0030       
+0031       ind_map = 1+round(((lats(j,i)-latss(1))/(latss(ny)-latss(1)))*63);
+0032     
+0033       subplot(2,2,2), plot(ss,ctt,<span class="string">'.'</span>,<span class="string">'color'</span>,cmap(ind_map,:))     
+0034       
+0035       <span class="keyword">if</span> nloop==1, grid on, hold on, <span class="keyword">end</span>
+0036           
+0037       <span class="keyword">if</span> nloop==1
+0038           subplot(2,2,3), dj_pltmp(longss,latss,longs1), grid on
+0039           subplot(2,2,4), dj_pltmp(longss,latss,lats1), grid on
+0040       <span class="keyword">end</span>
+0041 
+0042       
+0043     <span class="keyword">end</span>
+0044     
+0045   <span class="keyword">end</span>
+0046     
+0047   <span class="keyword">if</span> mod(j,1)==0 | j==ny
+0048         set(gca,<span class="string">'zdir'</span>,<span class="string">'reverse'</span>)
+0049         figure(gcf), dj_pause(1)
+0050   <span class="keyword">end</span>
+0051     
+0052 <span class="keyword">end</span>
+0053 
+0054 hold off
+0055 
+0056 dj_toc
+0057 
+0058 <span class="keyword">return</span>
+0059 
+0060 
+0061 inds = find(finite(g)&amp;p&gt;plo&amp;p&lt;phi); nn = length(inds);
+0062 
+0063 ss = s(inds); tt = t(inds); pp = p(inds);
+0064 
+0065 gg = g(inds); gmin = min(gg), gmax = max(gg)
+0066 
+0067 <span class="keyword">for</span> kk = 1:nn
+0068     
+0069     ind_map = 1+round(((gg(kk)-gmin)/(gmax-gmin))*63); 
+0070 
+0071     figure(3), set(gcf,<span class="string">'Position'</span>,[709   446   706   489])
+0072    
+0073     plot3(ss(kk),tt(kk),pp(kk),<span class="string">'.'</span>,<span class="string">'color'</span>,cmap(ind_map,:))
+0074     
+0075     <span class="keyword">if</span> kk==1, grid on, hold on, <span class="keyword">end</span>
+0076     
+0077     <span class="keyword">if</span> mod(kk,10000)==0 | kk==nn
+0078         set(gca,<span class="string">'zdir'</span>,<span class="string">'reverse'</span>)  
+0079         figure(gcf), dj_pause(1)
+0080     <span class="keyword">end</span>
+0081   
+0082 <span class="keyword">end</span>
+0083 
+0084</pre></div>
+<hr><address>Generated on Thu 17-Apr-2008 14:32:37 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

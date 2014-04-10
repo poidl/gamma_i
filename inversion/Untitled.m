@@ -1,0 +1,1 @@
+ocean==3 | (ocean==4&lats>=-30) |(ocean==4&lats<-30&lats>=-35&longs<117)
